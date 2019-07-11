@@ -3,8 +3,8 @@ Parallel SNP Finder
 
 V0.0.2
 
-		+--A
-	+---+
+    +--A
+    +---+
     |	+--B
   --+
    	| +----A
