@@ -1,0 +1,2 @@
+# SNPPar
+Parallel SNP Finder
