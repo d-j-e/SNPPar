@@ -1099,7 +1099,8 @@ def convertMonophyleticResults(monophyletic_output,tree):
 	return monophyletic_mapped
 
 def combineTables(unordered_table, unordered_nodes, ordered_table, ordered_nodes):
-	print('\nCombining monophyletic and mapped mutation events...')
+	print('\nCombining monophyletic and mapped mutation events')
+	print('Also combining monophyletic and mapped node sequences...')
 	order = []
 	for item in unordered_nodes:
 		order.append(ordered_nodes.index(item))
@@ -1279,7 +1280,7 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 	return result
 
 def getConsequences(mapped, snptable, strains, node_snptable, nodes, sequence, snp_list):
-	print("\nAssigning coding consequenses to the SNP events...")
+	print("\nAssigning coding consequenses to the mutation events...")
 	syn_count = 0
 	ns_count = 0
 	ambiguous_count = 0
