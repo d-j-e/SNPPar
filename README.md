@@ -1,21 +1,21 @@
-###SNPPar
+### SNPPar
 Parallel SNP Finder
 
 V0.0.2
 
-##Home:
+## Home:
 
 https://github.com/d-j-e/SNPPar (currently private)
 
-##Requirements:
+## Requirements:
 
 Python 3, BioPython, ete3, TreeTime 
 
-#Optional Requirement:
+# Optional Requirement:
 
 FastML
 
-##Installing biopython, ete3 and TreeTime
+## Installing biopython, ete3 and TreeTime
 
 All are available through 'pip'
 
@@ -24,36 +24,36 @@ pip install ete3
 pip install phylo-treetime
 
 
-#To get the options for SNPPar (or see below):
+# To get the options for SNPPar (or see below):
 
 python snppar.py -h
 
 
-#To get parallel SNPs with all SNP reported for each position (i.e. default settings!):
+# To get parallel SNPs with all SNP reported for each position (i.e. default settings!):
 
 python snppar.py -s <alleles.csv> -t <tree> -g <genbank.gbk>
 
 
-#To only map the SNPs back to the tree:
+# To only map the SNPs back to the tree:
 	
 python snppar.py -s <alleles.csv> -t <tree> -g <genbank.gbk> -n 
 
 
-#To get all of the homoplastic events (and any other change(s) at the same positions):
+# To get all of the homoplastic events (and any other change(s) at the same positions):
 	
 python snppar.py -s <alleles.csv> -t <tree> -g <genbank.gbk> -R -C -H
 
 
-#To get a list of only the homoplastic events (e.g. to remove them)
+# To get a list of only the homoplastic events (e.g. to remove them)
 
 python snppar.py -s <alleles.csv> -t <tree> -g <genbank.gbk> -a -n -H 
 
 
 * Please message me (David Edwards) on Slack if you have any problems or find any errors in the output. This code is definitely still in development.
 
-#Warning, the name may yet change...
+# Warning, the name may yet change...
 
-##Input requirements:
+## Input requirements:
 
 The tree needs to be bifucating, rooted (midpoint is fine, but an outgroup is better...), and in Newick format.
 
