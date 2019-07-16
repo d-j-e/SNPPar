@@ -3,6 +3,8 @@ Parallel SNP Finder
 
 V0.0.2
 
+![alt text](https://github.com/d-j-e/SNPPar/blob/master/SNPPar.png "SNPPar: parallel SNP finder")
+
 ## Home:
 
 https://github.com/d-j-e/SNPPar (currently private)
