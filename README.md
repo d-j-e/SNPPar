@@ -11,16 +11,18 @@ V0.0.2
 
 https://github.com/d-j-e/SNPPar (currently private)
 
-# Requirements:
+Please message me (David Edwards) on Slack if you have any problems or find any errors in the output. This code is definitely still in development.
 
+## Warning 
+the name may yet change...
+
+# Requirements:
 Python 3, BioPython, ete3, TreeTime 
 
 ## Optional Requirement:
-
-FastML
+FastML (http://fastml.tau.ac.il/)
 
 ## Installing biopython, ete3 and TreeTime
-
 All are available through 'pip'
 
 * pip install biopython
@@ -55,13 +57,9 @@ python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -R -C -H
 python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H 
 
 
-Please message me (David Edwards) on Slack if you have any problems or find any errors in the output. This code is definitely still in development.
-
-## Warning, the name may yet change...
-
 ## Input requirements:
 
-The tree needs to be bifucating, rooted (midpoint is fine, but an outgroup is better...), and in Newick format.
+The tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is better...), and in Newick format.
 
 SNPPar currently only takes SNP tables (a small example is provided below):
 
@@ -101,3 +99,16 @@ Also, SNPPar currently requires the GenBank version of the reference genome (sam
     -c, --counting        Flag to display counts during SNP testing
     -u, --no_clean_up     Flag to turn off deletion of intermediate files on
                           completion of run
+
+# Outputs (default)
+
+* Sequence calls at the internal nodes (MFASTA)
+* Mutation tables
+  * One with all mutation event calls
+  * Another with all mutation events at SNP positions found to be parallel
+* Tree in NHX (extended Newick) and NEXUS formats
+  * Internal node labels (same as found in mutation event tables) \*Currently needs fixing\*
+  * Total number of mutation events (SNPs) and parallel mutation events on each branch
+  * the NEXUS tree can be read into FigTree (http://tree.bio.ed.ac.uk/software/figtree/) and iToL (https://itol.embl.de/)
+  * the NHX tree should be for ggtree (https://bioconductor.org/packages/release/bioc/html/ggtree.html) but does not work as planned - an alternative is in development...
+
