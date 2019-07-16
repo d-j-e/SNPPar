@@ -13,8 +13,8 @@ https://github.com/d-j-e/SNPPar (currently private)
 
 Please message me (David Edwards) on Slack if you have any problems or find any errors in the output. This code is definitely still in development.
 
-## Warning 
-the name may yet change...
+## Citation 
+coming soon...
 
 # Requirements:
 Python 3, BioPython, ete3, TreeTime 
