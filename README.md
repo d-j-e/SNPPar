@@ -20,7 +20,9 @@ FastML
 All are available through 'pip'
 
 pip install biopython
+
 pip install ete3
+
 pip install phylo-treetime
 
 
@@ -61,8 +63,11 @@ SNPPar currently only takes SNP tables (a small example is provided below):
 
 
 Pos,IsolateA,IsolateB,IsolateC
+
 10,A,A,C
+
 20,T,C,T
+
 36,T,T,G
 
 
