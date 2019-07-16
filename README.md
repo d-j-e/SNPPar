@@ -11,7 +11,11 @@ V0.0.2
 
 https://github.com/d-j-e/SNPPar (currently private)
 
-Please message me (David Edwards) on Slack if you have any problems or find any errors in the output. This code is definitely still in development.
+Please message me (David Edwards) on Slack if you have any problems or find any errors in the output. Or you can use the SNPPar 'Issues' page now this is on GitHub... 
+
+Note that this code is definitely still in development.
+
+Coming Very Soon: SNPPar_test - a git with all the data, code, instructions and outputs for testing SNPPar with simulated data as found in the citation below.
 
 ## Citation 
 coming soon...
@@ -31,31 +35,25 @@ All are available through 'pip'
 
 * pip install phylo-treetime
 
-
 ## To get the options for SNPPar (or see below):
 
 python snppar.py -h
-
 
 ## To get parallel SNPs with all SNP reported for each position (i.e. default settings!):
 
 python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
 
-
 ## To only map the SNPs back to the tree:
 	
 python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
-
 
 ## To get all of the homoplastic events (and any other change(s) at the same positions):
 	
 python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -R -C -H
 
-
 ## To get a list of only the homoplastic events (e.g. to remove them)
 
 python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H 
-
 
 ## Input requirements:
 
