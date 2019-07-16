@@ -1,4 +1,6 @@
-![alt text](https://github.com/d-j-e/SNPPar/blob/master/SNPPar.png "SNPPar: parallel SNP finder")
+<p align="center"> 
+<img src="https://github.com/d-j-e/SNPPar/blob/master/SNPPar.png">
+</p>
 
 # SNPPar
 Parallel SNP Finder
