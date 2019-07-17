@@ -1,5 +1,5 @@
-<p align="center"> 
-<img src="https://github.com/d-j-e/SNPPar/blob/master/SNPPar.png" width="100">
+<p align="left"> 
+<img src="https://github.com/d-j-e/SNPPar/blob/master/SNPPar.png" width="150">
 </p>
 
 # SNPPar
