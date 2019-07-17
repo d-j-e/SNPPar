@@ -15,8 +15,8 @@
 python snppar.py -s snps.csv -g genbank.gb -t tree.tre [-d output_directory]
 '''
 #
-# Last modified - 09/07/2019
-# Changes:
+# Last modified - 17/07/2019
+# Changes:	fixed node labels in NEXUS tree output
 #
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
@@ -34,12 +34,14 @@ from ete3 import Tree
 import resource
 
 # Constants declaration
-version = 'V0.0.2'
+version = 'V0.0.3'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
-fastml_exec = "~/Downloads/FastML.v3.1/programs/fastml/fastml"
-#fastml_exec = "fastml"
+# 'lazy' fastml install
+#fastml_exec = "~/Downloads/FastML.v3.1/programs/fastml/fastml"
+# fastml installed on PATH
+fastml_exec = "fastml"
 
 def parseArguments():
 	parser = ArgumentParser(description='\nSNPPar: Parallel SNP Finder '+ version)
@@ -686,7 +688,6 @@ def mapSNPs(snps_to_map, snptable, strains, tree_name, prefix):
 	writeMFASTA(aln_file_name,newtable,strains)
 	output_seqs = prefix+"fastml_out/fastml_seq.joint.fasta"
 	fastml_tree_name = prefix+"fastml_out/fastml_tree.newick.txt"
-	# run fastml, seq output as fasta
 	fastml_command = " ".join([fastml_exec,"-t",tree_name,"-s",aln_file_name,
 						"-x",fastml_tree_name,
 						"-y",prefix+"fastml_out/fastml_tree.ancestor.txt",
@@ -716,7 +717,6 @@ def mapSNPsTT(snps_to_map, snptable, strains, tree_name, directory, tree, prefix
 		newtable.append(snptable[i])
 	writeMFASTAaddNs(aln_file_name,newtable,strains)
 	output_dir = directory+"treetime_out/"
-	# run TreeTime
 	treetime_command = " ".join(["treetime ancestral --aln",aln_file_name,"--tree",tree_name,"--outdir",output_dir,"--report-ambiguous --verbose 2"])
 	print ("\nRunning TreeTime: " + treetime_command+"\n")
 	os.system(treetime_command)
@@ -1514,10 +1514,9 @@ def mapEventsToTree(tree,total_node_count,parallel_node_count,convergent_node_co
 			name = name.lstrip('(')
 		label = name.split(':')[0]
 		if not(label == ';'):
-			labels.append(name.split(':')[0])
+			labels.append(label)
 		else:
 			labels.append('N1')
-	new_full_split = []
 	taxa_index_counter = 0
 	tree_out = '#NEXUS\nBegin taxa;\n\tDimensions ntax=' + str(len(isolate_names)) + ';\n\tTaxlabels\n'
 	tree_out_2 = 'Begin trees;\n\tTranslate\n'  
@@ -1537,10 +1536,11 @@ def mapEventsToTree(tree,total_node_count,parallel_node_count,convergent_node_co
 				full_split[i] += ',homoplastic=0'
 			full_split[i] += '];'
 		else:
-			if taxa_index_counter < len(isolate_names) and labels[i] in isolate_names:
-				tree_out_2 +=  ('\t\t' + str(taxa_index_counter) + ' ' + labels[i] + ',\n')
-			elif labels[i] in isolate_names:
-				tree_out_2 +=  ('\t\t' + str(taxa_index_counter) + ' ' + labels[i] + '\n')
+			if labels[i] in isolate_names:
+				if taxa_index_counter < len(isolate_names):
+					tree_out_2 +=  ('\t\t' + str(taxa_index_counter) + ' ' + labels[i] + ',\n')
+				else:
+					tree_out_2 +=  ('\t\t' + str(taxa_index_counter) + ' ' + labels[i] + '\n')
 			if labels[i] in total_node_count[1]:
 				new_index = total_node_count[1].index(labels[i])
 				entry = full_split[i].split(':')
@@ -1554,7 +1554,7 @@ def mapEventsToTree(tree,total_node_count,parallel_node_count,convergent_node_co
 							full_split[i] += '('								
 					full_split[i] += str(taxa_index_counter) + '[&total=' + str(total_node_count[2][new_index])
 				else:
-					full_split[i] = entry[0] + '[&total=' + str(total_node_count[2][new_index]) 
+					full_split[i] = labels[i] + '[&total=' + str(total_node_count[2][new_index]) 
 				if parallel_node_count:
 					if labels[i] in parallel_node_count[1]:
 						new_index = parallel_node_count[1].index(labels[i])
@@ -1588,8 +1588,11 @@ def mapEventsToTree(tree,total_node_count,parallel_node_count,convergent_node_co
 				full_split[i] = ''
 				if j:
 					for k in range(j):
-						full_split[i] += '('				
-				full_split[i] += str(taxa_index_counter) + '[&total=0'
+						full_split[i] += '('
+				if labels[i] in isolate_names:
+					full_split[i] += str(taxa_index_counter) + '[&total=0'
+				else:
+					full_split[i] += labels[i] + '[&total=0'
 				if parallel_node_count:
 					full_split[i] += ',parallel=0'
 				if convergent_node_count:
@@ -1609,7 +1612,6 @@ def mapEventsToTree(tree,total_node_count,parallel_node_count,convergent_node_co
 	return tree_out
 
 def mapEventsToNHXTree(tree,total_node_count,parallel_node_count,convergent_node_count,revertant_node_count,homoplastic_node_count,isolate_names):
-# need to change to give a NHX to all nodes (internal and tips) in tree
 	full_split = []
 	labels = []
 	new_tree = tree.write(format=1)
@@ -1945,7 +1947,6 @@ def main():
 	# process mapped SNPs to get mutation events
 	parallel_mapped = combineParallelResults(parallel_output,snps_mapped)
 	monophyletic_mapped = convertMonophyleticResults(monophyletic_output,tree)
-
 	mapped = sorted(parallel_mapped + monophyletic_mapped, key=itemgetter(0))
 	node_snptable = combineTables(mapped_node_sequences, node_names_mapped, monophyletic_node_sequences, tree_nodes)
 	print("\nWriting node sequences to " + prefix + "node_sequences.fasta")

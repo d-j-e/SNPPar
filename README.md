@@ -5,7 +5,7 @@
 # SNPPar
 Parallel SNP Finder
 
-V0.0.2
+V0.0.3
 
 ## Home:
 
