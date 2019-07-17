@@ -105,7 +105,7 @@ Also, SNPPar currently requires the GenBank version of the reference genome (sam
   * One with all mutation event calls
   * Another with all mutation events at SNP positions found to be parallel
 * Tree in NHX (extended Newick) and NEXUS formats
-  * Internal node labels (same as found in mutation event tables) \*Currently needs fixing\*
+  * Internal node labels (same as found in mutation event tables)
   * Total number of mutation events (SNPs) and parallel mutation events on each branch
   * the NEXUS tree can be read into FigTree (http://tree.bio.ed.ac.uk/software/figtree/) and iToL (https://itol.embl.de/)
   * the NHX tree should be for ggtree (https://bioconductor.org/packages/release/bioc/html/ggtree.html) but does not work as planned - an alternative is in development...
