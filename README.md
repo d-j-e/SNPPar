@@ -118,29 +118,30 @@ python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H
 
 # Explanation of header in mutation event files...
 * Common results
-  * Position            position of mutation event in reference seqeunce
-  * Type                Intragenic or Intergenic
-  * Ancestor_Node       Internal node that is the parent node of the derived node
-  * Derived_Node        Node that has mutation - can be internal node or leaf
-  * Ancestor_Call       Base found in the ancestor node
-  * Derived_Call        Base found in derived node - indicates mutation 
+
+  * Position: Position of mutation event in reference seqeunce
+  * Type: Intragenic or Intergenic
+  * Ancestor_Node: Internal node that is the parent node of the derived node
+  * Derived_Node: Node that has mutation - can be internal node or leaf
+  * Ancestor_Call: Base found in the ancestor node
+  * Derived_Call: Base found in derived node - indicates mutation 
 * Intragenic
-  * Gene                Gene where mutation event is found (identifier: GenBank tag)
-  * Strand              Strand which the gene occurs on - 1: Forward Strand, -1: Reverse Strand
-  * Codon               Codon in CDS that has mutation
-  * Codon_Position      Position within codon that has mutation
-  * Ancestor_Codon      Codon found in the ancestor node
-  * Derived_Codon       Codon found in the derived node
-  * Ancestor_A.A.       Translated amino acid at the ancestor node
-  * Derived_A.A.        Translated amino acid at the derived node
-  * Change              With regard to A.A. -> S: synonymous; NS: nonsynonymous; Ambiguous
+  * Gene: Gene where mutation event is found (identifier: GenBank tag)
+  * Strand: Strand which the gene occurs on - 1: Forward Strand, -1: Reverse Strand
+  * Codon: Codon in CDS that has mutation
+  * Codon_Position: Position within codon that has mutation
+  * Ancestor_Codon: Codon found in the ancestor node
+  * Derived_Codon: Codon found in the derived node
+  * Ancestor_A.A.: Translated amino acid at the ancestor node
+  * Derived_A.A.: Translated amino acid at the derived node
+  * Change: With regard to A.A. -> S: synonymous; NS: nonsynonymous; Ambiguous
 * Intergenic 
-  * Up_Gene             Nearest gene upstream (5') of mutation event
-  * Up_Gene_Strand      Strand on which upstream gene occurs (same as Strand)
-  * Up_Gene_Distance    Base pair distance from mutation event to upstream gene
-  * Down_Gene           Nearest gene downstream (3') of mutation event
-  * Down_Gene_Strand    Strand on which downstream gene occurs (same as Strand)
-  * Down_Gene_Distance  Base pair distance from mutation event to downstream gene
+  * Up_Gene: Nearest gene upstream (5') of mutation event
+  * Up_Gene_Strand: Strand on which upstream gene occurs (same as Strand)
+  * Up_Gene_Distance: Base pair distance from mutation event to upstream gene
+  * Down_Gene: Nearest gene downstream (3') of mutation event
+  * Down_Gene_Strand: Strand on which downstream gene occurs (same as Strand)
+  * Down_Gene_Distance: Base pair distance from mutation event to downstream gene
 
 # Important Note
 SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are ***extremely unreliable*** - Indeed the tree has no homoplastic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
