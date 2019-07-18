@@ -9,7 +9,7 @@ SNPPar is designed to find homoplastic SNPs based on a user-defined phylogenetic
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available (though much, much slower)
 
-Current Version: V0.0.3
+Current Version: V0.0.4
 
 # Home:
 
@@ -112,9 +112,9 @@ python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H
   * Another with all mutation events at SNP positions found to be parallel
 * Tree in NHX (extended Newick) and NEXUS formats
   * Internal node labels (same as found in mutation event tables)
-  * Total number of mutation events (SNPs) and parallel mutation events on each branch
-  * the NEXUS tree can be read into [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) and iToL (https://itol.embl.de/)
-  * the NHX tree should be for [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) but does not work as planned - an alternative is in development...
+  * Total number of mutation events (SNPs) and parallel mutation events on each branch (but see Important Note below)
+  * the NEXUS tree can be read into [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) and [iToL](https://itol.embl.de/)
+  * the NHX tree can be read by [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) 
 
 # Explanation of header in mutation event files...
 * Common results
@@ -143,4 +143,7 @@ python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H
   * Down_Gene_Distance  Base pair distance from mutation event to downstream gene
 
 # Important Note
-SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the Root node ('N1') are *extremely unreliable* - Indeed the tree will have no homoplastic events mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
+SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are ***extremely unreliable*** - Indeed the tree has no homoplastic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
+
+# Another Important Note
+Have just realised that when a homoplastic event with the root node as the ancestor node is removed, if there is only one other mutation event at the same SNP position, that mutation event should be removed from the tree too (At least for parallel events - convergent and revertant mutation events are more complex). Affects both tree formats... **Will be fixed asap!** 

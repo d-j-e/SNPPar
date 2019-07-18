@@ -15,9 +15,10 @@
 python snppar.py -s snps.csv -g genbank.gb -t tree.tre [-d output_directory]
 '''
 #
-# Last modified - 17/07/2019
-# Changes:	fixed node labels in NEXUS tree output
-#
+# Last modified - 18/07/2019
+# Changes:	fixed node labels in NHX tree output - now works with ggtree
+#			fixed estimates of SNP calls between root node and its childen nodes
+# 
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
 from operator import itemgetter
@@ -31,10 +32,9 @@ from Bio.Seq import _dna_complement_table as dna_complement_table
 from Bio.Data.CodonTable import TranslationError
 from Bio.Align import MultipleSeqAlignment
 from ete3 import Tree
-import resource
 
 # Constants declaration
-version = 'V0.0.3'
+version = 'V0.0.4'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -130,7 +130,6 @@ def readSNPTable(infile):
 				else:
 					for k in keep:
 						snp_calls += lines[i][(j+2*(k-1)+1)].upper() 
-				snp_calls_out = ',' + ','.join(snp_calls)
 				snptable.append([snp, snp_calls])
 				snp_list.append(int(snp))
 				count +=1
@@ -1634,13 +1633,13 @@ def mapEventsToNHXTree(tree,total_node_count,parallel_node_count,convergent_node
 		if full_split[i] == ';':
 			full_split[i] = 'N1[&&NHX:total=0' 
 			if parallel_node_count:
-				full_split[i] += ',parallel=0'
+				full_split[i] += ':parallel=0'
 			if convergent_node_count:
-				full_split[i] += ',convergent=0'
+				full_split[i] += ':convergent=0'
 			if revertant_node_count:
-				full_split[i] += ',revertant=0'
+				full_split[i] += ':revertant=0'
 			if homoplastic_node_count:
-				full_split[i] += ',homoplastic=0'
+				full_split[i] += ':homoplastic=0'
 			full_split[i]+= '];'
 		else:
 			if labels[i] in total_node_count[1]:
@@ -1650,39 +1649,39 @@ def mapEventsToNHXTree(tree,total_node_count,parallel_node_count,convergent_node
 				if parallel_node_count:
 					if labels[i] in parallel_node_count[1]:
 						new_index = parallel_node_count[1].index(labels[i])
-						full_split[i] += (',parallel=' + str(parallel_node_count[2][new_index]))
+						full_split[i] += (':parallel=' + str(parallel_node_count[2][new_index]))
 					else:
-						full_split[i] += ',parallel=0'
+						full_split[i] += ':parallel=0'
 				if convergent_node_count:
 					if labels[i] in convergent_node_count[1]:
 						new_index = convergent_node_count[1].index(labels[i])
-						full_split[i] += (',convergent=' + str(convergent_node_count[2][new_index]))
+						full_split[i] += (':convergent=' + str(convergent_node_count[2][new_index]))
 					else:
-						full_split[i] += ',convergent=0'
+						full_split[i] += ':convergent=0'
 				if revertant_node_count:
 					if labels[i] in revertant_node_count[1]:
 						new_index = revertant_node_count[1].index(labels[i])
-						full_split[i] += (',revertant=' + str(revertant_node_count[2][new_index]))
+						full_split[i] += (':revertant=' + str(revertant_node_count[2][new_index]))
 					else:
-						full_split[i] += ',revertant=0'
+						full_split[i] += ':revertant=0'
 				if homoplastic_node_count:
 					if labels[i] in homoplastic_node_count[1]:
 						new_index = homoplastic_node_count[1].index(labels[i])
-						full_split[i] += (',homoplastic=' + str(homoplastic_node_count[2][new_index]))
+						full_split[i] += (':homoplastic=' + str(homoplastic_node_count[2][new_index]))
 					else:
-						full_split[i] += ',homoplastic=0'
+						full_split[i] += ':homoplastic=0'
 				full_split[i] += ']:' + entry[1]
 			else:
 				entry = full_split[i].split(':')
 				full_split[i] = entry[0] + '[&&NHX:total=0'
 				if parallel_node_count:
-					full_split[i] += ',parallel=0'
+					full_split[i] += ':parallel=0'
 				if convergent_node_count:
-					full_split[i] += ',convergent=0'
+					full_split[i] += ':convergent=0'
 				if revertant_node_count:
-					full_split[i] += ',revertant=0'
+					full_split[i] += ':revertant=0'
 				if homoplastic_node_count:
-					full_split[i] += ',homoplastic=0'
+					full_split[i] += ':homoplastic=0'
 				full_split[i] += ']:' + entry[1]
 	tree_out = full_split[0]
 	for i in range(1,len(full_split)):
@@ -1696,12 +1695,20 @@ def adjustRootCounts(node_counts,tree):
 	root_indexes = []
 	root_distances = []
 	root_counts = []
+	children = []
 	for i in range(len(node_counts[0])):
 		if node_counts[0][i] == 'N1':
+			children.append(node_counts[1][i])
 			root_indexes.append(i)
 			root_node = tree.get_tree_root()
 			root_distances.append(root_node.get_distance(tree.search_nodes(name=node_counts[1][i])[0]))
 			root_counts.append(node_counts[2][i])
+	if len(children) < 2:
+		root_node = tree.get_tree_root()
+		for child in root_node.children:
+			if child.name not in children:
+				children.append(child.name)
+				root_distances.append(root_node.get_distance(child))
 	total_distance = 0
 	for i in root_distances:
 		total_distance += i
@@ -1711,10 +1718,18 @@ def adjustRootCounts(node_counts,tree):
 	if root_indexes:
 		new_counts = []
 		new_counts.append(round(total_counts*root_distances[0]/total_distance))
-		if len(root_indexes) > 1:
-			new_counts.append(total_counts - new_counts[0])
-		for i in range(len(root_indexes)):
-			node_counts[2][root_indexes[i]] = new_counts[i]
+		new_counts.append(total_counts - new_counts[0])
+		if len(root_indexes) == 2:
+			for i in range(len(root_indexes)):
+				print(node_counts[2][root_indexes[i]])
+				node_counts[2][root_indexes[i]] = new_counts[i]
+				print(node_counts[2][root_indexes[i]])
+		else:
+			node_counts[2][root_indexes[0]] = new_counts[0]
+			if new_counts[1] > 0:
+				node_counts[0].append('N1')
+				node_counts[1].append(children[1])
+				node_counts[2].append(new_counts[1])
 	return node_counts
 
 def dropRootCounts(node_counts,tree):
