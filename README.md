@@ -5,9 +5,13 @@
 # SNPPar
 Parallel SNP Finder
 
-V0.0.3
+SNPPar is designed to find homoplastic SNPs based on a user-defined phylogenetic tree - more specifically, it searches for those SNPs that occur in parallel (same mutation @ same position in two [or more] unrelated groups/isolates)
 
-## Home:
+By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available (though much, much slower)
+
+Current Version: V0.0.3
+
+# Home:
 
 https://github.com/d-j-e/SNPPar (currently private)
 
@@ -17,16 +21,20 @@ Note that this code is definitely still in development.
 
 Coming Very Soon: SNPPar_test - a git with all the data, code, instructions and outputs for testing SNPPar with simulated data as found in the citation below.
 
-## Citation 
+# Citation 
 coming soon...
 
+# License:
+
+[GNU General Public License v3.0](https://github.com/d-j-e/SNPPar/blob/master/LICENSE)
+
 # Requirements:
-Python 3, BioPython, ete3, TreeTime 
+Python 3, BioPython, ETE3, TreeTime 
 
 ## Optional Requirement:
-FastML (http://fastml.tau.ac.il/)
+[FastML](http://fastml.tau.ac.il/)
 
-## Installing biopython, ete3 and TreeTime
+# Installing BioPython, ETE3 and TreeTime
 All are available through 'pip'
 
 * pip install biopython
@@ -35,29 +43,9 @@ All are available through 'pip'
 
 * pip install phylo-treetime
 
-## To get the options for SNPPar (or see below):
+# Input requirements:
 
-python snppar.py -h
-
-## To get parallel SNPs with all SNP reported for each position (i.e. default settings!):
-
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
-
-## To only map the SNPs back to the tree:
-	
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
-
-## To get all of the homoplastic events (and any other change(s) at the same positions):
-	
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -R -C -H
-
-## To get a list of only the homoplastic events (e.g. to remove them)
-
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H 
-
-## Input requirements:
-
-The tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is better...), and in Newick format.
+The input tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is better...), and in Newick format.
 
 SNPPar currently only takes SNP tables (a small example is provided below):
 
@@ -69,6 +57,8 @@ SNPPar currently only takes SNP tables (a small example is provided below):
 
 
 Also, SNPPar currently requires the GenBank version of the reference genome (same sequence as used to map the reads!)
+
+# Running SNPPar
   
     python snppar.py -h      
     usage: snppar.py [-h] -s SNPTABLE -t TREE -g GENBANK [-d DIRECTORY]
@@ -98,6 +88,22 @@ Also, SNPPar currently requires the GenBank version of the reference genome (sam
     -u, --no_clean_up     Flag to turn off deletion of intermediate files on
                           completion of run
 
+## To get parallel SNPs with all SNP reported for each position (i.e. default settings!):
+
+python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
+
+## To only map the SNPs back to the tree:
+	
+python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
+
+## To get all of the homoplastic events:
+	
+python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -R -C -H
+
+## To get a list of only the homoplastic events (e.g. to remove them)
+
+python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H 
+
 # Outputs (default)
 
 * Sequence calls at the internal nodes (MFASTA)
@@ -107,6 +113,34 @@ Also, SNPPar currently requires the GenBank version of the reference genome (sam
 * Tree in NHX (extended Newick) and NEXUS formats
   * Internal node labels (same as found in mutation event tables)
   * Total number of mutation events (SNPs) and parallel mutation events on each branch
-  * the NEXUS tree can be read into FigTree (http://tree.bio.ed.ac.uk/software/figtree/) and iToL (https://itol.embl.de/)
-  * the NHX tree should be for ggtree (https://bioconductor.org/packages/release/bioc/html/ggtree.html) but does not work as planned - an alternative is in development...
+  * the NEXUS tree can be read into [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) and iToL (https://itol.embl.de/)
+  * the NHX tree should be for [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) but does not work as planned - an alternative is in development...
 
+# Explanation of header in mutation event files...
+* Common results
+  * Position            position of mutation event in reference seqeunce
+  * Type                Intragenic or Intergenic
+  * Ancestor_Node       Internal node that is the parent node of the derived node
+  * Derived_Node        Node that has mutation - can be internal node or leaf
+  * Ancestor_Call       Base found in the ancestor node
+  * Derived_Call        Base found in derived node - indicates mutation 
+* Intragenic
+  * Gene                Gene where mutation event is found (identifier: GenBank tag)
+  * Strand              Strand which the gene occurs on - 1: Forward Strand, -1: Reverse Strand
+  * Codon               Codon in CDS that has mutation
+  * Codon_Position      Position within codon that has mutation
+  * Ancestor_Codon      Codon found in the ancestor node
+  * Derived_Codon       Codon found in the derived node
+  * Ancestor_A.A.       Translated amino acid at the ancestor node
+  * Derived_A.A.        Translated amino acid at the derived node
+  * Change              With regard to A.A. -> S: synonymous; NS: nonsynonymous; Ambiguous
+* Intergenic 
+  * Up_Gene             Nearest gene upstream (5') of mutation event
+  * Up_Gene_Strand      Strand on which upstream gene occurs (same as Strand)
+  * Up_Gene_Distance    Base pair distance from mutation event to upstream gene
+  * Down_Gene           Nearest gene downstream (3') of mutation event
+  * Down_Gene_Strand    Strand on which downstream gene occurs (same as Strand)
+  * Down_Gene_Distance  Base pair distance from mutation event to downstream gene
+
+# Important Note
+SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the Root node ('N1') are *extremely unreliable* - Indeed the tree will have no homoplastic events mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
