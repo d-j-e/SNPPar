@@ -29,7 +29,7 @@ coming soon...
 [GNU General Public License v3.0](https://github.com/d-j-e/SNPPar/blob/master/LICENSE)
 
 # Requirements:
-Python 3, BioPython, ETE3, TreeTime 
+[Python3](https://www.python.org/downloads/), [BioPython](https://biopython.org/), [ETE3](http://etetoolkit.org/), [TreeTime](https://github.com/neherlab/treetime) 
 
 ## Optional Requirement:
 [FastML](http://fastml.tau.ac.il/)
