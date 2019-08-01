@@ -15,9 +15,10 @@
 python snppar.py -s snps.csv -g genbank.gb -t tree.tre [-d output_directory]
 '''
 #
-# Last modified - 18/07/2019
+# Last modified - 1/8/2019
 # Changes:	fixed node labels in NHX tree output - now works with ggtree
 #			fixed estimates of SNP calls between root node and its childen nodes
+#			fixed nexus tree output (not sure why they broke, or how they were fixed TBH)
 # 
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
@@ -34,7 +35,7 @@ from Bio.Align import MultipleSeqAlignment
 from ete3 import Tree
 
 # Constants declaration
-version = 'V0.0.4'
+version = 'V0.0.5'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
