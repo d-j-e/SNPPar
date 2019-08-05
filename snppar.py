@@ -67,7 +67,7 @@ def parseArguments():
 
 def getOutputDirectory(output_directory, fastml):
 	if output_directory != '':
-		if output_directory[:-1] != '/':
+		if output_directory[-1] != '/':
 			output_directory += '/'
 		if not os.path.isdir(output_directory):
 			os.mkdir(output_directory)
@@ -1721,9 +1721,7 @@ def adjustRootCounts(node_counts,tree):
 		new_counts.append(total_counts - new_counts[0])
 		if len(root_indexes) == 2:
 			for i in range(len(root_indexes)):
-				print(node_counts[2][root_indexes[i]])
 				node_counts[2][root_indexes[i]] = new_counts[i]
-				print(node_counts[2][root_indexes[i]])
 		else:
 			node_counts[2][root_indexes[0]] = new_counts[0]
 			if new_counts[1] > 0:
