@@ -15,10 +15,10 @@
 python snppar.py -s snps.csv -g genbank.gb -t tree.tre [-d output_directory]
 '''
 #
-# Last modified - 1/8/2019
-# Changes:	fixed node labels in NHX tree output - now works with ggtree
-#			fixed estimates of SNP calls between root node and its childen nodes
-#			fixed nexus tree output (not sure why they broke, or how they were fixed TBH)
+# Last modified - 5/9/2019
+# Changes:	Ignores 'split' genes in genbank reference
+#			SNPs can now be read in from MFASTA format (also requires list of SNP positions)
+#			added logging (to do)
 # 
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
@@ -35,7 +35,7 @@ from Bio.Align import MultipleSeqAlignment
 from ete3 import Tree
 
 # Constants declaration
-version = 'V0.0.5'
+version = 'V0.0.6'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -46,8 +46,10 @@ fastml_exec = "fastml"
 
 def parseArguments():
 	parser = ArgumentParser(description='\nSNPPar: Parallel SNP Finder '+ version)
-	# Required Inputs
-	parser.add_argument('-s', '--snptable', type=str, required=True, help='SNP table (required)')
+	# Inputs
+	parser.add_argument('-s', '--snptable', type=str, help='SNP table (i.e. RedDog output)')
+	parser.add_argument('-m', '--mfasta', type=str, help='SNPs in MFASTA format')
+	parser.add_argument('-P', '--snp_position_list', type=str, help='SNP position list (required for MFASTA input)')
 	parser.add_argument('-t', '--tree', type=str, required=True, help='Phylogenetic tree (required)')
 	parser.add_argument('-g', '--genbank', type=str, required=True, help='Genbank reference (required)')
 	# Optional Inputs
@@ -62,7 +64,7 @@ def parseArguments():
 	parser.add_argument('-n', '--no_parallel', default=False, action="store_true", help='Flag to turn off parallel calls output')
 	parser.add_argument('-e', '--no_all_events', default=False, action="store_true", help='Flag to turn off reporting of all mutation events')
 	parser.add_argument('-f', '--fastml', default=False, action="store_true", help='Flag to use fastML for ASR (default ASR: TreeTime)')
-	parser.add_argument('-c', '--counting', default=False, action="store_true", help='Flag to display counts during SNP testing')
+	parser.add_argument('-c', '--counting', default=False, action="store_true", help='Flag to display counts during SNP testing - warning: slow with large data sets')
 	parser.add_argument('-u', '--no_clean_up', default=False, action="store_true", help='Flag to turn off deletion of intermediate files on completion of run')
 	return parser.parse_args()
 
@@ -92,7 +94,8 @@ def isVariable(snp_calls):
 	return len(set(snp_calls.upper()).intersection(nt)) > 1
 
 def readSNPTable(infile):
-	print("\nReading SNP table from " + infile)
+	message = "\nReading SNP table from " + infile
+	print(message)
 	snptable = []
 	strains = [] # strains from header
 	strainlist = []
@@ -140,14 +143,72 @@ def readSNPTable(infile):
 	strains_used = []
 	for strain in strains:
 		if strain in strainlist:
+			strains_used.append(strain)
+	message = "\nFinished reading " + str(len(snptable) + len(ignored)) + " SNPs in total\n"
+	message += "...keeping " + str(len(snptable)) + " variable SNPs and ignoring " + str(len(ignored)) +" SNPs\n"
+	message += "that are non-variable among the " +  str(len(strains_used)) + " isolates"			
+	print(message)
+	return(snptable, strains_used, len(snptable), len(strains_used), snp_list)
+
+def readMFASTA(infile_mfasta, infile_snp_positions):
+	message = "\nReading SNPs from " + infile_mfasta + " and SNP positions from " + infile_snp_positions
+	print(message)
+	snptable = []
+	strains = [] # strains from headers in MFASTA
+	strainlist = []
+	ignored =[]
+	keep = []
+	keep_ingroup = []
+	snp_list = []
+	all_calls = []
+	snp_position_lines = readInput(infile_snp_positions)
+	for line in snp_position_lines:
+		snp_positions.append(line.rstrip())
+		all_calls.append('')
+	mfasta_lines = readInput(infile_mfasta)
+	for line in mfasta_lines:
+		if line.startswith('>'):
+			name = line.lstrip()
+			name = name.rstrip()
+			strains.append(name)
+		else:
+			for i in len(line.rstrip()):
+				all_calls[i]+=line[i].upper()
+	for i in range(1,len(strains)):
+		strainlist.append(strains[i]) 
+		keep.append(i)
+		keep_ingroup.append(i)
+	strains_used = []
+	for strain in strains:
+		if strain in strainlist:
 			strains_used.append(strain) 			
-	print("\nFinished reading " + str(len(snptable) + len(ignored)) + " SNPs in total")
-	print("...keeping " + str(len(snptable)) + " variable SNPs and ignoring " + str(len(ignored)) +" SNPs")
-	print("that are non-variable among the " +  str(len(strains_used)) + " isolates")
+	for i in range(len(all_calls)):
+		# create list of in-group snp calls
+		snp_calls_ingroup = ''
+		for j in keep_ingroup:
+			snp_calls_ingroup += all_calls[i][j]
+		if isVariable(snp_calls_ingroup):
+			# create list of all snp calls (currently ingroup and all calls are the same)
+			snp_calls = ''
+			if len(keep) == len(keep_ingroup):
+				snp_calls = snp_calls_ingroup
+			else:
+				for j in keep:
+					snp_calls += all_calls[i][j] 
+			snptable.append([snp_positions[i], snp_calls])
+			snp_list.append(int(snp_positions[i]))
+			count +=1
+		else:
+			ignored.append(snp_positions[i])
+	message = "\nFinished reading " + str(len(snptable) + len(ignored)) + " SNPs in total\n"
+	message += "...keeping " + str(len(snptable)) + " variable SNPs and ignoring " + str(len(ignored)) +" SNPs\n"
+	message += "that are non-variable among the " +  str(len(strains_used)) + " isolates"			
+	print(message)
 	return(snptable, strains_used, len(snptable), len(strains_used), snp_list)
 
 def readTree(new_tree):
-	print("\nReading tree from " + new_tree + "...")
+	message = "\nReading tree from " + new_tree + "..."
+	print(message)
 	isolate_names = []
 	node_names = []
 	tree = Tree(new_tree,format=1) # tree for parsing mapping results
@@ -222,10 +283,7 @@ def setSequence(snp, snptable, node_sequences, tree, snp_set, snp_call, ancestor
 	for i in range(len(node_names)):
 		if node_names[i] in descendant_node_names:
 			node_sequences[-1][1] += snp_call.upper()
-#		elif not(node_names[i] in na_nodes):
-#			node_sequences[-1][1] += ancestor_call.upper()
 		else:
-#			node_sequences[-1][1] += '-'
 			node_sequences[-1][1] += ancestor_call.upper()
 	return node_sequences
 
@@ -312,8 +370,9 @@ def getNANodes(tree, na_set, node_names):
 	return test_tree, removed_nodes
 
 def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node_names,counting):
-	print("\nParsing SNPs to find bi-, tri- and quadallelic SNPs...")
-	print("Also testing if biallelic SNPs are potentially homoplastic")
+	message = "\nParsing SNPs to find bi-, tri- and quadallelic SNPs...\n"
+	message += "Also testing if biallelic SNPs are potentially homoplastic"
+	print(message)
 	snps_to_map = []
 	monophyletic_snps = []
 	monophyletic_node_sequences = []
@@ -324,7 +383,8 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 	triallelic = 0
 	quadallelic = 0
 	if counting:
-		print("\nSNP no.\\patterns\\homoplastic")
+		message = "\nSNP no.\\patterns\\homoplastic"
+		print(message)
 	for i in range(total_snp_count):
 		call_counts = countCalls(i,total_isolate_count,snptable)
 		if ((call_counts[0] + call_counts[1] + call_counts[4]) == total_isolate_count):
@@ -352,9 +412,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "C", "A", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:
 						monophyletic_node_sequences[-1][1] += "C"
 				elif call_counts[1] == 1:
 					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "c", "a", strains)
@@ -365,9 +422,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "A", "C", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "A"
 		elif ((call_counts[0] + call_counts[2] + call_counts[4]) == total_isolate_count):
 			if (call_counts[0] > 1 and call_counts[2] > 1):
@@ -394,9 +448,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "G", "A", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "G"
 				elif call_counts[2] == 1:
 					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "g", "a", strains)
@@ -407,9 +458,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "A", "G", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "A"
 		elif ((call_counts[0] + call_counts[3] + call_counts[4]) == total_isolate_count):
 			if (call_counts[0] > 1 and call_counts[3] > 1):
@@ -436,9 +484,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "T", "A", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "T"
 				elif call_counts[3] == 1:
 					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "t", "a", strains)
@@ -449,9 +494,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "A", "T", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "A"
 		elif ((call_counts[1] + call_counts[2] + call_counts[4]) == total_isolate_count):
 			if (call_counts[1] > 1 and call_counts[2] > 1):
@@ -478,9 +520,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "G", "C", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "G"
 				elif call_counts[2] == 1:
 					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "g", "c", strains)
@@ -491,9 +530,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "C", "G", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "C"
 		elif ((call_counts[1] + call_counts[3] + call_counts[4]) == total_isolate_count):
 			if (call_counts[1] > 1 and call_counts[3] > 1):
@@ -520,9 +556,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "T", "C", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "T"
 				elif call_counts[3] == 1:
 					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "t", "c", strains)
@@ -533,9 +566,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "C", "T", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "C"
 		elif ((call_counts[2] + call_counts[3] + call_counts[4]) == total_isolate_count):
 			if (call_counts[2] > 1 and call_counts[3] > 1):
@@ -562,9 +592,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "T", "G", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "T"
 				elif call_counts[3] == 1:
 					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "t", "g", strains)
@@ -575,9 +602,6 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 					monophyletic_snps.append([i, "G", "T", snp_set])
 					monophyletic_node_sequences.append([snptable[i][0],""])
 					for j in range(len(node_names)):
-#						if node_names[i] in na_nodes:
-#							monophyletic_node_sequences[-1][1] += "-"
-#						else:					
 						monophyletic_node_sequences[-1][1] += "G"
 		elif ((call_counts[0] + call_counts[1] + call_counts[2] + call_counts[4]) == total_isolate_count):
 			if (call_counts[0] > 0 and call_counts[1] > 0 and call_counts[2] > 0):
@@ -600,17 +624,19 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 				other_snps.append(i)
 				quadallelic += 1
 		if counting:
-			print((str(i+1)+'\\'+str(len(snp_pattern))+'\\'+str(biallelic_homoplastic)), end='\r')
+			message = (str(i+1)+'\\'+str(len(snp_pattern))+'\\'+str(biallelic_homoplastic)), end='\r'
+			print(message)
 	if counting:
 		print()
-	print("\nBiallelic SNPs (>1 one isolate): " + str(biallelic))
-	print("Biallelic SNP patterns tested: " + str(len(snp_pattern)))
-	print("Paraphyletic SNPs found: " + str(biallelic_homoplastic))
-	print("Triallelic SNPs found: " + str(triallelic))
-	print("Quadallelic SNPs found: " + str(quadallelic))
+	message = "\nBiallelic SNPs (>1 one isolate): " + str(biallelic)
+	message += "\nBiallelic SNP patterns tested: " + str(len(snp_pattern))
+	message += "\nParaphyletic SNPs found: " + str(biallelic_homoplastic)
+	message += "\nTriallelic SNPs found: " + str(triallelic)
+	message += "\nQuadallelic SNPs found: " + str(quadallelic)
 	snps_to_map = snps_to_map + other_snps
 	snps_to_map.sort()
-	print("\nTotal SNPs for mapping: " + str(len(snps_to_map)))
+	message += "\n\nTotal SNPs for mapping: " + str(len(snps_to_map))
+	print(message)
 	return snps_to_map, monophyletic_snps, monophyletic_node_sequences
 
 def readSeqs(output_seqs,strains,snps_to_map,snptable):
@@ -696,13 +722,16 @@ def mapSNPs(snps_to_map, snptable, strains, tree_name, prefix):
 						"-d",prefix+"fastml_out/fastml_prob.joint.txt",
 						"-y",prefix+"fastml_out/fastml_prob.marginal.txt",
 						"-mh","-qf","-b"])
-	print ("\nRunning fastml: " + fastml_command+"\n")
+	message = "\nRunning fastml: " + fastml_command+"\n"
+	print (message)
 	os.system(fastml_command)
 	fastml_tree = Tree(fastml_tree_name,format=1)
-	print("\nExtracting internal node sequences from ASR results...")
+	message = "\nExtracting internal node sequences from ASR results..."
+	print(message)
 	node_snptable, nodes = readSeqs(output_seqs,strains,snps_to_map,snptable)
 	snps_mapped = []
-	print("\nExtracting mutation events from ASR results...")
+	message = "\nExtracting mutation events from ASR results..."
+	print(message)
 	for node in fastml_tree.traverse("preorder"):
 		if not node.is_leaf():
 			for child in node.children:
@@ -718,17 +747,21 @@ def mapSNPsTT(snps_to_map, snptable, strains, tree_name, directory, tree, prefix
 	writeMFASTAaddNs(aln_file_name,newtable,strains)
 	output_dir = directory+"treetime_out/"
 	treetime_command = " ".join(["treetime ancestral --aln",aln_file_name,"--tree",tree_name,"--outdir",output_dir,"--report-ambiguous --verbose 2"])
-	print ("\nRunning TreeTime: " + treetime_command+"\n")
+	message = "\nRunning TreeTime: " + treetime_command+"\n"
+	print (message)
 	os.system(treetime_command)
-	print("\nExtracting mutation events from ASR results...")
+	message = "\nExtracting mutation events from ASR results..."
+	print(message)
 	snps_mapped = readMappedSNPs(output_dir+'annotated_tree.nexus',tree,snps_to_map,snptable)
 	output_seqs = directory+"treetime_out/ancestral_sequences.fasta"
-	print("\nExtracting internal node sequences from ASR results...")
+	message = "\nExtracting internal node sequences from ASR results..."
+	print(message)
 	node_snptable, nodes = readSeqsTT(output_seqs,strains,snps_to_map,snptable)
 	return snps_mapped, node_snptable, nodes
 
 def readGenbank(genbank):
-	print("\nReading Genbank file from " + genbank)
+	message = "\nReading Genbank file from " + genbank
+	print(message)
 	handle = open(genbank,"r")
 	record = SeqIO.read(handle, "genbank")
 	sequence = record.seq
@@ -739,7 +772,10 @@ def makeGeneIndex(geneannot,sequenceLength):
 	feature_list = []
 	feature_count = 0
 	for feature in geneannot:
-		if feature.type != "source" and feature.type not in excludefeatures and feature.type in genefeatures:
+		if (feature.type != "source" 
+			and feature.type not in excludefeatures 
+			and feature.type in genefeatures
+			and not str(feature.location).startswith('join')):
 			strand = feature.location.strand
 			if strand:
 				start = feature.location.nofuzzy_start
@@ -768,7 +804,8 @@ def makeGeneIndex(geneannot,sequenceLength):
 			slice1 += 1
 			feature_slice[slice1].append([feature_list[feature_count][0],feature_list[feature_count][1],feature_list[feature_count][2],feature_list[feature_count][3]])
 		feature_count += 1
-	print ("Found "+str(len(feature_list))+" genes")
+	message = "Found "+str(len(feature_list))+" genes"
+	print (message)
 	return slice_size, feature_slice, feature_list
 
 def findNearestGenes(x, feature_slice, slice_id, geneannot, sequenceLength):
@@ -959,7 +996,8 @@ def findNearestGenes(x, feature_slice, slice_id, geneannot, sequenceLength):
 	return intergenic_genes
 
 def assignSNPs(snps_to_test, snptable, slice_size, feature_slice, geneannot, sequenceLength, output, snp_type):
-	print("\nAssigning " + snp_type + " to genes")
+	message = "\nAssigning " + snp_type + " to genes"
+	print(message)
 	intergenic = 0
 	intragenic = 0
 	for i in range(len(snps_to_test)):
@@ -997,8 +1035,9 @@ def assignSNPs(snps_to_test, snptable, slice_size, feature_slice, geneannot, seq
 				intergenic_genes = findNearestGenes(x, feature_slice, slice_id, geneannot, sequenceLength)
 				output.append(intergenic_genes)
 				intergenic += 1
-	print()
-	print ("Of the " + str(len(snps_to_test)) +" "+ snp_type +" for testing, " + str(intergenic) + " are intergenic, and " + str(intragenic) + " are intragenic")
+
+	message = "\nOf the " + str(len(snps_to_test)) +" "+ snp_type +" for testing, " + str(intergenic) + " are intergenic, and " + str(intragenic) + " are intragenic"
+	print (message)
 	if (intergenic + intragenic) > len(snps_to_test):
 		print (str(intergenic + intragenic - len(snps_to_test)) + " SNPs occur in overlapping genes")
 	return output
@@ -1071,7 +1110,8 @@ def makeMFASTA(geneannot,gene_list,gene_snps,intergenic,snptable,strains,prefix)
 	return gene_tags
 
 def combineParallelResults(parallel_output, snps_mapped):
-	print("\nProcessing mapped mutation events...")
+	message = "\nProcessing mapped mutation events..."
+	print(message)
 	parallel_mapped = []
 	for item in parallel_output:
 		SNP = item[0]
@@ -1081,7 +1121,8 @@ def combineParallelResults(parallel_output, snps_mapped):
 	return parallel_mapped
 
 def convertMonophyleticResults(monophyletic_output,tree):
-	print("\nProcessing monophyletic mutation events...")
+	message = "\nProcessing monophyletic mutation events..."
+	print(message)
 	monophyletic_mapped = []
 	for item in monophyletic_output:
 		if len(item[-1])==1:
@@ -1099,8 +1140,9 @@ def convertMonophyleticResults(monophyletic_output,tree):
 	return monophyletic_mapped
 
 def combineTables(unordered_table, unordered_nodes, ordered_table, ordered_nodes):
-	print('\nCombining monophyletic and mapped mutation events')
-	print('Also combining monophyletic and mapped node sequences...')
+	message = "\nCombining monophyletic and mapped mutation events"
+	message += "\nAlso combining monophyletic and mapped node sequences..."
+	print(message)
 	order = []
 	for item in unordered_nodes:
 		order.append(ordered_nodes.index(item))
@@ -1227,7 +1269,8 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 		elif positionInCodon == 2:
 			codon = (snpPosition-1,snpPosition,snpPosition+1)
 		else:
-			DoError("Unrecognised position in codon: " + positionInCodon)
+			message = "Unrecognised position in codon: " + positionInCodon
+			DoError(message)
 	elif genestrand == -1:
 	# note genestop is not in -1 offset space
 		if positionInCodon == 3:
@@ -1237,9 +1280,11 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 		elif positionInCodon == 2:
 			codon = (snpPosition+1,snpPosition,snpPosition-1)
 		else:
-			DoError("Unrecognised position in codon: " + positionInCodon)
+			message = "Unrecognised position in codon: " + positionInCodon
+			DoError(message)
 	else:
-		DoError("Unrecognised gene strand:" + genestrand)
+		message = "Unrecognised gene strand:" + genestrand
+		DoError(message)
 	# extract codon sequence from reference genome
 	codonseq = [str(sequence[codon[0]-1]), str(sequence[codon[1]-1]), str(sequence[codon[2]-1])]
 	if genestrand == -1:
@@ -1280,7 +1325,8 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 	return result
 
 def getConsequences(mapped, snptable, strains, node_snptable, nodes, sequence, snp_list):
-	print("\nAssigning coding consequenses to the mutation events...")
+	message = "\nAssigning coding consequenses to the mutation events..."
+	print(message)
 	syn_count = 0
 	ns_count = 0
 	ambiguous_count = 0
@@ -1310,7 +1356,8 @@ def getConsequences(mapped, snptable, strains, node_snptable, nodes, sequence, s
 	return mapped
 
 def findEvents(GetStrict, noAllCalls, getConvergent, getRevertant, getHomoplastic, noParallel, noAllEvents, mapped, prefix, tree, isolate_names):
-	print('\nParsing all mutation events...')
+	message = "\nParsing all mutation events..."
+	print(message)
 	last_item = -1
 	if getConvergent or getHomoplastic:
 		convergent = []
@@ -1435,43 +1482,57 @@ def findEvents(GetStrict, noAllCalls, getConvergent, getRevertant, getHomoplasti
 			if item not in homoplastic:
 				homoplastic.append(item)
 		homoplastic = sorted(homoplastic)
-		print("\nFound " + str(len(homoplastic)) + " mutation events that are homoplastic")
+		message = "\nFound " + str(len(homoplastic)) + " mutation events that are homoplastic"
+		print(message)
 		if not noAllCalls:
-			print("\nWriting all calls at homoplastic event positions to " + prefix + "homoplastic_events_all_calls.tsv")
+			message = "\nWriting all calls at homoplastic event positions to " + prefix + "homoplastic_events_all_calls.tsv"
+			print(message)
 			outputAllCallsTSV(prefix+"homoplastic_events_all_calls.tsv",mapped,homoplastic)
 		else:
-			print("\nWriting homoplastic events to " + prefix + "homoplastic_events.tsv")
+			message = "\nWriting homoplastic events to " + prefix + "homoplastic_events.tsv"
+			print(message)
 			outputTSV(prefix+"homoplastic_events.tsv",mapped,homoplastic)
 	if getConvergent:
-		print("\nFound " + str(len(convergent)) + " mutation events that are convergent")
+		message = "\nFound " + str(len(convergent)) + " mutation events that are convergent"
+		print(message)
 		if not noAllCalls:
-			print("\nWriting all calls at convergent event positions to " + prefix + "convergent_events_all_calls.tsv")
+			message = "\nWriting all calls at convergent event positions to " + prefix + "convergent_events_all_calls.tsv"
+			print(message)
 			outputAllCallsTSV(prefix+"convergent_events_all_calls.tsv",mapped,convergent)
 		else:
-			print("\nWriting convergent events to " + prefix + "convergent_events.tsv")
+			message.= "\nWriting convergent events to " + prefix + "convergent_events.tsv"
+			print(message)
 			outputTSV(prefix+"convergent_events.tsv",mapped,convergent)
 	if getRevertant:
-		print("\nFound " + str(len(revertant)) + " mutation events that are revertant")
+		message = "\nFound " + str(len(revertant)) + " mutation events that are revertant"
+		print(message)
 		if not noAllCalls:
-			print("\nWriting all calls at revertant event positions to " + prefix + "revertant_events_all_calls.tsv")
+			message = "\nWriting all calls at revertant event positions to " + prefix + "revertant_events_all_calls.tsv"
+			print(message)
 			outputAllCallsTSV(prefix+"revertant_events_all_calls.tsv",mapped,revertant)
 		else:
-			print("\nWriting revertant events to " + prefix + "revertant_events.tsv")
+			message = "\nWriting revertant events to " + prefix + "revertant_events.tsv"
+			print(message)
 			outputTSV(prefix+"revertant_events.tsv",mapped,revertant)
 	if not noParallel:
-		print("\nFound " + str(len(parallel)) + " mutation events that are parallel")
+		message = "\nFound " + str(len(parallel)) + " mutation events that are parallel"
+		print(message)
 		if not noAllCalls:
-			print("\nWriting all calls at parallel event positions to " + prefix + "parallel_events_all_calls.tsv")
+			message = "\nWriting all calls at parallel event positions to " + prefix + "parallel_events_all_calls.tsv"
+			print(message)
 			outputAllCallsTSV(prefix+"parallel_events_all_calls.tsv",mapped,parallel)
 		else:
-			print("\nWriting parallel events to " + prefix + "parallel_events.tsv")
+			message = "\nWriting parallel events to " + prefix + "parallel_events.tsv"
+			print(message)
 			outputTSV(prefix+"parallel_events.tsv",mapped,parallel)
 	if GetStrict:
-		print("\nOf the parallel mutation events, " + str(len(strict_parallel)) + " mutation events are parallel when ignoring genes (i.e. 'strict')")
-		print("\nWriting strict parallel events to " + prefix + "strict_parallel_events.tsv")
+		message = "\nOf the parallel mutation events, " + str(len(strict_parallel)) + " mutation events are parallel when ignoring genes (i.e. 'strict')"
+		message += "\n\nWriting strict parallel events to " + prefix + "strict_parallel_events.tsv"
+		print(message)
 		outputList(prefix+"strict_parallel_events.tsv",strict_parallel)
 	if not noAllEvents:
-		print("\nWriting all mutation events to " + prefix + "all_mutation_events.tsv")
+		message = "\nWriting all mutation events to " + prefix + "all_mutation_events.tsv"
+		print(message)
 		outputAllEventsTSV(prefix+"all_mutation_events.tsv",mapped)
 	
 	total_node_count = adjustRootCounts(countEvents(mapped,getUniqueIndex(mapped)),tree)
@@ -1491,10 +1552,12 @@ def findEvents(GetStrict, noAllCalls, getConvergent, getRevertant, getHomoplasti
 		homoplastic_node_count = dropRootCounts(countEvents(mapped,homoplastic),tree)
 	else:
 		homoplastic_node_count = []
-	print("\nMapping mutation events to NEXUS tree: " + prefix + "node_labelled_nexus.tre")
+	message = "\nMapping mutation events to NEXUS tree: " + prefix + "node_labelled_nexus.tre"
+	print(message)
 	tree_out = mapEventsToTree(tree,total_node_count,parallel_node_count,convergent_node_count,revertant_node_count,homoplastic_node_count,isolate_names)
 	outputToFile(prefix+'node_labelled_nexus.tre',tree_out)
-	print("\nAlso mapping mutation events to Newick NHX tree: " + prefix + "node_labelled_newick.tre")
+	message = "\nAlso mapping mutation events to Newick NHX tree: " + prefix + "node_labelled_newick.tre"
+	print(message)
 	tree_out = mapEventsToNHXTree(tree,total_node_count,parallel_node_count,convergent_node_count,revertant_node_count,homoplastic_node_count,isolate_names)
 	outputToFile(prefix+'node_labelled_newick.tre',tree_out)
 	return 
@@ -1818,7 +1881,8 @@ def outputTSV(fileName,mapping,list_index):
 				output += '-\t-\t-\t-\t-\t-\n'
 		outputToFile(fileName,output)
 	else:
-		print("No output available... writing of file aborted!")
+		message = "No output available... writing of file aborted!"
+		print(message)
 	return
 
 def outputAllCallsTSV(fileName,mapping,list_index):
@@ -1895,7 +1959,8 @@ def readMappedSNPs(tt_nexus_tree,the_tree,snps_to_map,snptable):
 
 def cleanUp(directory, prefix, fastml):
 	#clean up temp files from fastml step incl. snps_to_map.mfasta, prob.marginal.txt and log.txt
-	print("\nCleaning up intermediate files...")
+	message = "\nCleaning up intermediate files..."
+	print(message)
 	os.system('rm ' + prefix + 'snps_to_map.mfasta')
 	if fastml:
 		os.system('rm log.txt')
@@ -1906,35 +1971,52 @@ def cleanUp(directory, prefix, fastml):
 	return
 
 def printEnd():
-	message = random.randint(1,6)
-	if message > 0 and message < 3:
-		print("\n...Finished\n")
+	message_int = random.randint(1,6)
+	if message_int > 0 and message_int < 3:
+		message = "\n...Finished\n"
 	elif message == 3:
-		print("\n...Terminado\n")
+		message = "\n...Terminado\n"
 	elif message == 4:
-		print("\n...Fertig\n")
+		message = "\n...Fertig\n"
 	elif message == 5:
-		print("\n...Selesai\n")
+		message = "\n...Selesai\n"
 	elif message == 6:
-		print("\n...Terminé\n")
+		message = "\n...Terminé\n"
+	print (message)
 	return
 
 def main():
 	# Parse arguments
 	arguments = parseArguments()
-	print('\nSNPPar:\tParallel SNP Finder '+ version)
+	message = '\nSNPPar:\tParallel SNP Finder '+ version
 	if arguments.fastml:
 		ASR = 'FastML'
 	else:
 		ASR = 'TreeTime'
-	print('\t(utilising ' + ASR + " for ASR)")
+	message += '\n\t(utilising ' + ASR + " for ASR)"
+	print(message)
 	directory = getOutputDirectory(arguments.directory, arguments.fastml)
 	if arguments.prefix:
 		prefix = directory + arguments.prefix
 	else:
 		prefix = directory
 	# read in SNP table
-	snptable, strains, total_snp_count, total_isolate_count,snpPositionList = readSNPTable(arguments.snptable)
+	if arguments.snptable:
+		snptable, strains, total_snp_count, total_isolate_count,snpPositionList = readSNPTable(arguments.snptable)
+	elif arguments.mfasta and arguments.snp_position_list:
+		snptable, strains, total_snp_count, total_isolate_count,snpPositionList = readMFASTA(arguments.mfasta,arguments.snp_position_list)
+	elif arguments.mfasta:
+		message = "No SNP positions list included... terminating run."
+		print(message)
+		sys.exit()
+	elif arguments.snp_position_list:
+		message = "No MFASTA included... terminating run."
+		print(message)
+		sys.exit()
+	else:
+		message = "No SNPs provided... terminating run."
+		print(message)
+		sys.exit()
 	# read in genbank file
 	record, sequence, geneannot = readGenbank(arguments.genbank)
 	# index gene features
@@ -1943,10 +2025,12 @@ def main():
 	tree, tree_strains, tree_nodes = readTree(arguments.tree)
 	#check same isolates are found tree and alignment
 	if not sameStrains(strains,tree_strains):
-		print("\nEach isolate in the tree should also be found in the SNP table\nand visa-versa - your data does not match this requirement!")
+		message = "\nEach isolate in the tree should also be found in the SNP table\nand visa-versa - your data does not match this requirement!"
+		print(message)
 		exit()
 	else:
-		print("Tree and SNP table have same isolates")
+		message = "Tree and SNP table have same isolates"
+		print(message)
 	# find biallelic SNPs that occur in more than one isolate
 	# and test whether their SNP pattern is paraphyletic
 	snps_to_map, monophyletic_snps, monophyletic_node_sequences = getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,tree_nodes,arguments.counting)
@@ -1963,7 +2047,8 @@ def main():
 	monophyletic_mapped = convertMonophyleticResults(monophyletic_output,tree)
 	mapped = sorted(parallel_mapped + monophyletic_mapped, key=itemgetter(0))
 	node_snptable = combineTables(mapped_node_sequences, node_names_mapped, monophyletic_node_sequences, tree_nodes)
-	print("\nWriting node sequences to " + prefix + "node_sequences.fasta")
+	message = "\nWriting node sequences to " + prefix + "node_sequences.fasta"
+	print(message)
 	writeMFASTA(prefix+"node_sequences.fasta",node_snptable,tree_nodes)
 	mapped = getConsequences(mapped, snptable, strains, node_snptable, tree_nodes, sequence, snpPositionList)
 	findEvents(arguments.strict, arguments.no_all_calls, arguments.convergent, arguments.revertant, arguments.homoplastic, arguments.no_parallel, arguments.no_all_events, mapped, prefix, tree, tree_strains)
