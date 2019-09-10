@@ -53,7 +53,7 @@ SNP table
 
     Pos,IsolateA,IsolateB,IsolateC
     10,A,A,C
-    20,T,C,T
+    21,T,C,T
     36,T,T,G
 
 As MFASTA
@@ -68,8 +68,8 @@ As MFASTA
 And SNP Position file
 
     10
-    20
-    30
+    21
+    36
 
 Also, SNPPar currently requires the GenBank version of the reference genome (same sequence as used to map the reads!)
 
