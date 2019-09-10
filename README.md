@@ -9,7 +9,7 @@ SNPPar is designed to find homoplastic SNPs based on a user-defined phylogenetic
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available (though much, much slower)
 
-Current Version: V0.0.5
+Current Version: V0.0.6
 
 # Home:
 
@@ -47,27 +47,51 @@ All are available through 'pip'
 
 The input tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is better...), and in Newick format.
 
-SNPPar currently only takes SNP tables (a small example is provided below):
+SNPPar takes either a SNP table (a small example is provided below) or a MFASTA file with a second file with the SNP positions (in same order)
 
+SNP table
 
     Pos,IsolateA,IsolateB,IsolateC
     10,A,A,C
     20,T,C,T
     36,T,T,G
 
+As MFASTA
+
+    >A
+    ATT
+    >B
+    ACT
+    >C
+    CTG
+
+And SNP Position file
+
+    10
+    20
+    30
 
 Also, SNPPar currently requires the GenBank version of the reference genome (same sequence as used to map the reads!)
 
+Note: If any gene is split in the reference (including across the origin of the reference), the program will ingnore this gene, but will give a warning to user.
+
 # Running SNPPar
-  
-    python snppar.py -h      
-    usage: snppar.py [-h] -s SNPTABLE -t TREE -g GENBANK [-d DIRECTORY]
-              [-p PREFIX] [-S] [-H] [-C] [-R] [-a] [-n] [-e] [-f] [-c] [-u]
-    SNPPar: Parallel SNP Finder V0.0.2
+
+
+    python snppar.py -h
+    usage: snppar.py [-h] [-s SNPTABLE] [-m MFASTA] [-P SNP_POSITION_LIST] -t TREE
+                   -g GENBANK [-d DIRECTORY] [-p PREFIX] [-S] [-H] [-C] [-R]
+                   [-a] [-n] [-e] [-f] [-c] [-u]
+    SNPPar: Parallel SNP Finder V0.0.6
+
     optional arguments:
     -h, --help            show this help message and exit
     -s SNPTABLE, --snptable SNPTABLE
-                          SNP table (required)
+                          SNP table (i.e. RedDog output)
+    -m MFASTA, --mfasta MFASTA
+                          SNPs in MFASTA format
+    -P SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
+                          SNP position list (required for MFASTA input)
     -t TREE, --tree TREE  Phylogenetic tree (required)
     -g GENBANK, --genbank GENBANK
                           Genbank reference (required)
@@ -84,7 +108,8 @@ Also, SNPPar currently requires the GenBank version of the reference genome (sam
     -n, --no_parallel     Flag to turn off parallel calls output
     -e, --no_all_events   Flag to turn off reporting of all mutation events
     -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
-    -c, --counting        Flag to display counts during SNP testing
+    -c, --counting        Flag to display counts during SNP testing - warning:
+                          slow with large data sets
     -u, --no_clean_up     Flag to turn off deletion of intermediate files on
                           completion of run
 
