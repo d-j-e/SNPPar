@@ -2,7 +2,7 @@
 #
 # 
 # ****Function Description***
-#
+# SNPPar: parallel SNP finder
 #
 # Author(s) 
 #			D. J. Edwards (David.Edwards@monash.edu) 
@@ -12,13 +12,13 @@
 #
 # Example command:
 '''
-python snppar.py -s snps.csv -g genbank.gb -t tree.tre [-d output_directory]
+python snppar.py -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 5/9/2019
-# Changes:	Ignores 'split' genes in genbank reference
-#			SNPs can now be read in from MFASTA format (also requires list of SNP positions)
-#			added log file
+# Last modified - 10/9/2019
+# Changes:	Ignores 'split' genes in genbank reference - warning given
+#			SNPs can now be read in from MFASTA file (also requires list of SNP positions)
+#			Added log file
 # 
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
@@ -192,6 +192,7 @@ def readMFASTA(infile_mfasta, infile_snp_positions, log):
 	keep_ingroup = []
 	snp_list = []
 	all_calls = []
+	snp_positions = []
 	snp_position_lines = readInput(infile_snp_positions)
 	for line in snp_position_lines:
 		snp_positions.append(line.rstrip())
@@ -199,13 +200,14 @@ def readMFASTA(infile_mfasta, infile_snp_positions, log):
 	mfasta_lines = readInput(infile_mfasta)
 	for line in mfasta_lines:
 		if line.startswith('>'):
-			name = line.lstrip()
+			name = line.lstrip('>')
 			name = name.rstrip()
 			strains.append(name)
 		else:
-			for i in len(line.rstrip()):
+			for i in range(len(line.rstrip())):
 				all_calls[i]+=line[i].upper()
-	for i in range(1,len(strains)):
+
+	for i in range(0,len(strains)):
 		strainlist.append(strains[i]) 
 		keep.append(i)
 		keep_ingroup.append(i)
@@ -228,7 +230,6 @@ def readMFASTA(infile_mfasta, infile_snp_positions, log):
 					snp_calls += all_calls[i][j] 
 			snptable.append([snp_positions[i], snp_calls])
 			snp_list.append(int(snp_positions[i]))
-			count +=1
 		else:
 			ignored.append(snp_positions[i])
 	message = "\nFinished reading " + str(len(snptable) + len(ignored)) + " SNPs in total\n"
