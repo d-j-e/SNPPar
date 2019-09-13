@@ -15,11 +15,16 @@
 python snppar.py -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 10/9/2019
+# Last modified - 13/9/2019
 # Changes:	Ignores 'split' genes in genbank reference - warning given
 #			SNPs can now be read in from MFASTA file (also requires list of SNP positions)
 #			Added log file
-# 
+#			Extended logging to ASR output
+#			Added fastml execute command to options (default: PATH i.e. 'fastml')
+#
+#
+#	personal 'lazy' fastml setup
+#	fastml_exec = "~/Downloads/FastML.v3.1/programs/fastml/fastml"
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
 from operator import itemgetter
@@ -36,14 +41,10 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.0.6'
+version = 'V0.0.7'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
-# 'lazy' fastml install
-#fastml_exec = "~/Downloads/FastML.v3.1/programs/fastml/fastml"
-# fastml installed on PATH
-fastml_exec = "fastml"
 
 def parseArguments():
 	parser = ArgumentParser(description='\nSNPPar: Parallel SNP Finder '+ version)
@@ -65,9 +66,28 @@ def parseArguments():
 	parser.add_argument('-n', '--no_parallel', default=False, action="store_true", help='Flag to turn off parallel calls output')
 	parser.add_argument('-e', '--no_all_events', default=False, action="store_true", help='Flag to turn off reporting of all mutation events')
 	parser.add_argument('-f', '--fastml', default=False, action="store_true", help='Flag to use fastML for ASR (default ASR: TreeTime)')
+	parser.add_argument('-x', '--fastml_execute', type=str, default="fastml", help='Command to execute fastML (default command: "fastml" i.e. on PATH)')
 	parser.add_argument('-c', '--counting', default=False, action="store_true", help='Flag to display counts during SNP testing - warning: slow with large data sets')
 	parser.add_argument('-u', '--no_clean_up', default=False, action="store_true", help='Flag to turn off deletion of intermediate files on completion of run')
 	return parser.parse_args()
+
+def executeCommand(command, log):
+	result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	# Manually decoding as subprocess.run decoding replaces \r with \n
+	result.stdout = result.stdout.decode()
+	result.stderr = result.stderr.decode()
+	if result.returncode != 0:
+		message = 'Failed to run command: ' + command
+		logPrint(log, message, "CRITICAL")
+		message = 'stdout: ' + result.stdout
+		log(log, message, "CRITICAL")
+		message = 'stderr: ' + result.stderr
+		log(log, message, "CRITICAL")
+		sys.exit(1)
+	else:
+		message = 'stdout: ' + result.stdout
+		logPrint(log, message, "INFO")
+	return
 
 def getOutputDirectory(output_directory, fastml):
 	if output_directory != '':
@@ -91,6 +111,19 @@ def setLog(directory):
 
 def logPrint(log, message, message_type):
 	print(message)
+	while message.startswith('\n'):
+		message = message.lstrip('\n')
+	now = datetime.now()
+	timestamp = datetime.timestamp(now)
+	dt_object = datetime.fromtimestamp(timestamp)
+	time = dt_object.strftime("%Y-%m-%d_%H:%M:%S.%f")	
+	message = time + ": " + message_type + " : " + message
+	if not message.endswith('\n'):
+		message += '\n'
+	appendToFile(log, message)
+	return
+
+def log(log, message, message_type):
 	while message.startswith('\n'):
 		message = message.lstrip('\n')
 	now = datetime.now()
@@ -745,7 +778,7 @@ def mapSNPs(snps_to_map, snptable, strains, tree_name, prefix,log):
 	writeMFASTA(aln_file_name,newtable,strains)
 	output_seqs = prefix+"fastml_out/fastml_seq.joint.fasta"
 	fastml_tree_name = prefix+"fastml_out/fastml_tree.newick.txt"
-	fastml_command = " ".join([fastml_exec,"-t",tree_name,"-s",aln_file_name,
+	fastml_command = " ".join([fastml_execute,"-t",tree_name,"-s",aln_file_name,
 						"-x",fastml_tree_name,
 						"-y",prefix+"fastml_out/fastml_tree.ancestor.txt",
 						"-j",output_seqs,
@@ -755,7 +788,8 @@ def mapSNPs(snps_to_map, snptable, strains, tree_name, prefix,log):
 						"-mh","-qf","-b"])
 	message = "\nRunning fastml: " + fastml_command+"\n"
 	logPrint(log, message, 'INFO')
-	os.system(fastml_command)
+#	os.system(fastml_command)
+	executeCommand(fastml_command, log)
 	fastml_tree = Tree(fastml_tree_name,format=1)
 	message = "\nExtracting internal node sequences from ASR results..."
 	logPrint(log, message, 'INFO')
@@ -780,7 +814,8 @@ def mapSNPsTT(snps_to_map, snptable, strains, tree_name, directory, tree, prefix
 	treetime_command = " ".join(["treetime ancestral --aln",aln_file_name,"--tree",tree_name,"--outdir",output_dir,"--report-ambiguous --verbose 2"])
 	message = "\nRunning TreeTime: " + treetime_command+"\n"
 	logPrint(log, message, 'INFO')
-	os.system(treetime_command)
+#	os.system(treetime_command)
+	executeCommand(treetime_command, log)
 	message = "\nExtracting mutation events from ASR results..."
 	logPrint(log, message, 'INFO')
 	snps_mapped = readMappedSNPs(output_dir+'annotated_tree.nexus',tree,snps_to_map,snptable)
@@ -1292,7 +1327,7 @@ def getDerivedBasesReverse(codonseq,positionInCodon,codon,snp_list,node_snptable
 		codonseq = checkDerivedBaseReverse(2,codonseq,codon,snp_list,node_snptable,derived_group,strains,snptable)
 	return codonseq
 
-def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_group,ancestral_group,sequence,snptable,strains,node_snptable,tree_nodes,snp_list):
+def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_group,ancestral_group,sequence,snptable,strains,node_snptable,tree_nodes,snp_list,log):
 	codon = ()
 	# determine coordinates of codon within genome
 	if genestrand == 1:
@@ -1305,7 +1340,8 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 			codon = (snpPosition-1,snpPosition,snpPosition+1)
 		else:
 			message = "Unrecognised position in codon: " + positionInCodon
-			DoError(message)
+			logPrint(log, message, "CRITICAL")
+			sys.exit(1)
 	elif genestrand == -1:
 	# note genestop is not in -1 offset space
 		if positionInCodon == 3:
@@ -1316,10 +1352,12 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 			codon = (snpPosition+1,snpPosition,snpPosition-1)
 		else:
 			message = "Unrecognised position in codon: " + positionInCodon
-			DoError(message)
+			logPrint(log, message, "CRITICAL")
+			sys.exit(1)
 	else:
 		message = "Unrecognised gene strand:" + genestrand
-		DoError(message)
+		logPrint(log, message, "CRITICAL")
+		sys.exit(1)
 	# extract codon sequence from reference genome
 	codonseq = [str(sequence[codon[0]-1]), str(sequence[codon[1]-1]), str(sequence[codon[2]-1])]
 	if genestrand == -1:
@@ -1368,7 +1406,7 @@ def getConsequences(mapped, snptable, strains, node_snptable, nodes, sequence, s
 	intergenic_count = 0
 	for i in range(len(mapped)):
 		if mapped[i][1] == 'intragenic':
-			result = getCodons(mapped[i][5],mapped[i][3],mapped[i][0],mapped[i][9],mapped[i][8],mapped[i][7],mapped[i][6],sequence,snptable,strains,node_snptable,nodes,snp_list)
+			result = getCodons(mapped[i][5],mapped[i][3],mapped[i][0],mapped[i][9],mapped[i][8],mapped[i][7],mapped[i][6],sequence,snptable,strains,node_snptable,nodes,snp_list,log)
 			for item in result:
 				mapped[i].append(str(item))
 			if result[2] and result[2] == result[3]:
@@ -2044,15 +2082,15 @@ def main():
 	elif arguments.mfasta:
 		message = "No SNP positions list included... terminating run."
 		logPrint(log, message, 'CRITICAL')
-		sys.exit()
+		sys.exit(1)
 	elif arguments.snp_position_list:
 		message = "No MFASTA included... terminating run."
 		logPrint(log, message, 'CRITICAL')
-		sys.exit()
+		sys.exit(1)
 	else:
 		message = "No SNPs provided... terminating run."
 		logPrint(log, message, 'CRITICAL')
-		sys.exit()
+		sys.exit(1)
 	# read in genbank file
 	record, sequence, geneannot = readGenbank(arguments.genbank, log)
 	# index gene features
@@ -2063,7 +2101,7 @@ def main():
 	if not sameStrains(strains,tree_strains):
 		message = "\nEach isolate in the tree should also be found in the SNP table\nand visa-versa - your data does not match this requirement!"
 		logPrint(log, message, 'CRITICAL')
-		exit()
+		sys.exit(1)
 	else:
 		message = "Tree and SNP table have same isolates"
 		logPrint(log, message, 'INFO')
