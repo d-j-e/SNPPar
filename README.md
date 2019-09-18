@@ -55,21 +55,25 @@ SNP table
     10,A,A,C
     21,T,C,T
     36,T,T,G
+    47,T,-,C
 
 As MFASTA
 
     >A
-    ATT
+    ATTT
     >B
-    ACT
+    ACT-
     >C
-    CTG
+    CTGC
 
 And SNP Position file
 
     10
     21
     36
+    47
+
+Note that ambiguous and/or missing calls should be indicated by a '-'.
 
 Also, SNPPar currently requires the GenBank version of the reference genome (same sequence as used to map the reads!)
 
