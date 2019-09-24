@@ -1,0 +1,200 @@
+#NEXUS
+Begin taxa;
+	Dimensions ntax=94;
+	Taxlabels
+		106_S35_L001
+		88_S69_L001
+		Zhang671813
+		8038-95
+		Zhang671789
+		Zhang671809
+		Karonga181898
+		7426-10
+		10737-02
+		Casali137252
+		Casali108470
+		Casali133983
+		Zhang671807
+		96_S34_L001
+		Casali229945
+		Malawi245837
+		Casali158605
+		Zhang671792
+		Malawi036235
+		7194-05
+		Casali229920
+		Casali027454
+		Casali158615
+		Casali108494
+		Casali158589
+		Casali144542
+		Casali027448
+		Casali230007
+		12615-95
+		9847-95
+		Casali017791
+		3297-06
+		Casali067694
+		Casali067667
+		Casali027456
+		Casali133907
+		Casali108488
+		Casali144607
+		Casali229982
+		Casali133901
+		Karonga163990
+		Malawi245663
+		Karonga221603
+		Karonga221553
+		Casali227999
+		Casali067580
+		Casali067743
+		Casali137206
+		Casali234638
+		Casali067736
+		Casali108513
+		Casali067724
+		Casali144626
+		Casali067600
+		Casali144552
+		Casali234652
+		1232-02
+		Casali137198
+		Casali108479
+		Casali133924
+		Casali133861
+		Casali067765
+		Casali137236
+		Casali019562
+		Casali234646
+		Casali067714
+		Casali144634
+		Casali137229
+		Casali144554
+		Casali108490
+		Casali067688
+		Casali108510
+		Casali133867
+		Casali133844
+		Casali230000
+		Casali133927
+		Casali067618
+		Casali108484
+		Casali229966
+		Casali108467
+		Casali229923
+		Casali108491
+		Casali234618
+		Casali027455
+		Casali067576
+		Casali234598
+		Casali234565
+		Casali144633
+		Casali229933
+		Casali234666
+		Casali229980
+		Casali234633
+		Casali133953
+		Casali133895
+		;
+End;
+
+Begin trees;
+	Translate
+		1 106_S35_L001,
+		2 88_S69_L001,
+		3 Zhang671813,
+		4 8038-95,
+		5 Zhang671789,
+		6 Zhang671809,
+		7 Karonga181898,
+		8 7426-10,
+		9 10737-02,
+		10 Casali137252,
+		11 Casali108470,
+		12 Casali133983,
+		13 Zhang671807,
+		14 96_S34_L001,
+		15 Casali229945,
+		16 Malawi245837,
+		17 Casali158605,
+		18 Zhang671792,
+		19 Malawi036235,
+		20 7194-05,
+		21 Casali229920,
+		22 Casali027454,
+		23 Casali158615,
+		24 Casali108494,
+		25 Casali158589,
+		26 Casali144542,
+		27 Casali027448,
+		28 Casali230007,
+		29 12615-95,
+		30 9847-95,
+		31 Casali017791,
+		32 3297-06,
+		33 Casali067694,
+		34 Casali067667,
+		35 Casali027456,
+		36 Casali133907,
+		37 Casali108488,
+		38 Casali144607,
+		39 Casali229982,
+		40 Casali133901,
+		41 Karonga163990,
+		42 Malawi245663,
+		43 Karonga221603,
+		44 Karonga221553,
+		45 Casali227999,
+		46 Casali067580,
+		47 Casali067743,
+		48 Casali137206,
+		49 Casali234638,
+		50 Casali067736,
+		51 Casali108513,
+		52 Casali067724,
+		53 Casali144626,
+		54 Casali067600,
+		55 Casali144552,
+		56 Casali234652,
+		57 1232-02,
+		58 Casali137198,
+		59 Casali108479,
+		60 Casali133924,
+		61 Casali133861,
+		62 Casali067765,
+		63 Casali137236,
+		64 Casali019562,
+		65 Casali234646,
+		66 Casali067714,
+		67 Casali144634,
+		68 Casali137229,
+		69 Casali144554,
+		70 Casali108490,
+		71 Casali067688,
+		72 Casali108510,
+		73 Casali133867,
+		74 Casali133844,
+		75 Casali230000,
+		76 Casali133927,
+		77 Casali067618,
+		78 Casali108484,
+		79 Casali229966,
+		80 Casali108467,
+		81 Casali229923,
+		82 Casali108491,
+		83 Casali234618,
+		84 Casali027455,
+		85 Casali067576,
+		86 Casali234598,
+		87 Casali234565,
+		88 Casali144633,
+		89 Casali229933,
+		90 Casali234666,
+		91 Casali229980,
+		92 Casali234633,
+		93 Casali133953,
+		94 Casali133895
+		;
+tree TREE1 = [&R] ((1[&total=134,parallel=0]:0.00115985,2[&total=116,parallel=0]:0.00125062)N2[&total=303,parallel=0]:0.00294805,(3[&total=267,parallel=0]:0.00251222,((4[&total=171,parallel=0]:0.00150602,5[&total=149,parallel=0]:0.00141858)N5[&total=8,parallel=0]:0.000122461,(6[&total=159,parallel=0]:0.00139104,(7[&total=101,parallel=0]:0.000996819,((((8[&total=58,parallel=0]:0.000606619,9[&total=75,parallel=0]:0.000625522)N11[&total=33,parallel=0]:0.000255777,(10[&total=4,parallel=0]:3.78668e-05,(11[&total=2,parallel=0]:2.83996e-05,12[&total=4,parallel=0]:4.73343e-05)N13[&total=0,parallel=0]:1e-06)N12[&total=103,parallel=0]:0.00082444)N10[&total=2,parallel=0]:2.83108e-05,((13[&total=74,parallel=0]:0.000682328,14[&total=75,parallel=0]:0.000653845)N15[&total=35,parallel=0]:0.000208293,(15[&total=85,parallel=0]:0.000748454,(16[&total=82,parallel=0]:0.00060658,17[&total=79,parallel=0]:0.000672882)N17[&total=2,parallel=0]:3.74684e-05)N16[&total=11,parallel=0]:0.000113668)N14[&total=17,parallel=0]:0.000132576)N9[&total=0,parallel=0]:9.46507e-06,((18[&total=94,parallel=0]:0.000854139,19[&total=85,parallel=0]:0.000778079)N19[&total=18,parallel=0]:0.000160921,((20[&total=116,parallel=1]:0.000852441,(21[&total=63,parallel=0]:0.000710332,((22[&total=0,parallel=0]:1e-06,23[&total=0,parallel=0]:1e-06)N24[&total=76,parallel=0]:0.000776808,(24[&total=0,parallel=0]:1e-06,(25[&total=20,parallel=0]:0.00017038,((26[&total=33,parallel=0]:0.000217713,(27[&total=20,parallel=0]:0.000208237,(28[&total=9,parallel=0]:0.000123047,(29[&total=0,parallel=0]:1e-06,30[&total=0,parallel=0]:1.11836e-05)N31[&total=9,parallel=0]:0.000111853)N30[&total=0,parallel=0]:9.47324e-06)N29[&total=1,parallel=0]:1.89268e-05)N28[&total=0,parallel=0]:9.47516e-06,(31[&total=1,parallel=0]:1.89411e-05,(32[&total=4,parallel=0]:6.62497e-05,((33[&total=3,parallel=0]:6.62009e-05,(34[&total=2,parallel=0]:4.73228e-05,(35[&total=8,parallel=0]:4.73242e-05,36[&total=5,parallel=0]:4.73234e-05)N37[&total=2,parallel=0]:3.786e-05)N36[&total=0,parallel=0]:9.51326e-06)N35[&total=3,parallel=0]:3.7857e-05,(37[&total=6,parallel=0]:6.6248e-05,(38[&total=6,parallel=0]:4.73189e-05,(39[&total=3,parallel=0]:5.67869e-05,40[&total=8,parallel=0]:5.67835e-05)N40[&total=0,parallel=0]:1e-06)N39[&total=2,parallel=0]:2.83922e-05)N38[&total=4,parallel=0]:4.72686e-05)N34[&total=0,parallel=0]:1e-06)N33[&total=0,parallel=0]:1e-06)N32[&total=2,parallel=0]:4.65238e-05)N27[&total=0,parallel=0]:1e-06)N26[&total=75,parallel=0]:0.000605387)N25[&total=0,parallel=0]:1e-06)N23[&total=3,parallel=0]:2.81287e-05)N22[&total=11,parallel=0]:7.57577e-05)N21[&total=0,parallel=0]:1e-06,(((41[&total=0,parallel=0]:9.46289e-06,42[&total=0,parallel=0]:1e-06)N43[&total=0,parallel=0]:1e-06,(43[&total=0,parallel=0]:9.49835e-06,44[&total=0,parallel=0]:9.462e-06)N44[&total=3,parallel=0]:1.89669e-05)N42[&total=88,parallel=0]:0.000692892,((45[&total=37,parallel=0]:0.000189718,(46[&total=17,parallel=0]:0.000151765,47[&total=14,parallel=0]:0.000142282)N47[&total=14,parallel=0]:0.000142281)N46[&total=44,parallel=0]:0.000303599,((48[&total=1,parallel=0]:2.84542e-05,((49[&total=54,parallel=0]:0.000483974,50[&total=57,parallel=0]:0.000512513)N51[&total=1,parallel=0]:2.82846e-05,(51[&total=42,parallel=0]:0.000313083,52[&total=57,parallel=0]:0.000426957)N52[&total=17,parallel=0]:0.000161225)N50[&total=0,parallel=0]:1e-06)N49[&total=10,parallel=0]:7.53698e-05,(((53[&total=50,parallel=0]:0.000483855,(54[&total=36,parallel=0]:0.000322495,(55[&total=0,parallel=0]:9.46072e-06,56[&total=5,parallel=0]:6.63892e-05)N57[&total=35,parallel=0]:0.00027511)N56[&total=12,parallel=0]:0.000104246)N55[&total=11,parallel=0]:0.000180245,(57[&total=51,parallel=0]:0.00049331,(58[&total=52,parallel=0]:0.000528005,(59[&total=56,parallel=0]:0.000477645,60[&total=54,parallel=0]:0.000509127)N60[&total=6,parallel=0]:7.56795e-05)N59[&total=25,parallel=0]:0.000145569)N58[&total=1,parallel=0]:3.78687e-05)N54[&total=0,parallel=0]:9.47858e-06,((61[&total=88,parallel=0]:0.000701941,(62[&total=0,parallel=0]:1e-06,((63[&total=4,parallel=0]:8.53412e-05,(64[&total=41,parallel=0]:0.000350914,65[&total=11,parallel=0]:0.000123269)N66[&total=4,parallel=0]:3.7873e-05)N65[&total=45,parallel=0]:0.000464923,(66[&total=24,parallel=0]:0.000180186,(67[&total=8,parallel=0]:0.000123242,(68[&total=3,parallel=0]:4.74005e-05,69[&total=2,parallel=0]:5.68775e-05)N69[&total=2,parallel=0]:2.84376e-05)N68[&total=0,parallel=0]:9.44151e-06)N67[&total=42,parallel=0]:0.000407959)N64[&total=0,parallel=0]:1.77929e-05)N63[&total=0,parallel=0]:1e-06)N62[&total=0,parallel=0]:1e-06,((70[&total=8,parallel=0]:9.47855e-05,71[&total=5,parallel=0]:5.68708e-05)N71[&total=7,parallel=0]:6.61591e-05,((72[&total=15,parallel=0]:0.000150987,(73[&total=19,parallel=0]:0.000228178,(74[&total=13,parallel=0]:8.53095e-05,75[&total=5,parallel=0]:3.79123e-05)N75[&total=1,parallel=0]:4.67199e-05)N74[&total=2,parallel=0]:2.84295e-05)N73[&total=0,parallel=0]:1e-06,(76[&total=12,parallel=0]:0.000123221,(77[&total=9,parallel=0]:0.000113733,(78[&total=1,parallel=0]:1.89642e-05,((79[&total=1,parallel=0]:1.89536e-05,80[&total=3,parallel=0]:4.73836e-05)N80[&total=0,parallel=0]:9.47647e-06,((81[&total=1,parallel=0]:2.84301e-05,82[&total=2,parallel=0]:2.84295e-05)N82[&total=0,parallel=0]:1e-06,((83[&total=0,parallel=0]:1.89528e-05,(84[&total=1,parallel=0]:3.79085e-05,85[&total=8,parallel=0]:7.58156e-05)N85[&total=0,parallel=0]:1e-06)N84[&total=0,parallel=0]:1e-06,((86[&total=10,parallel=0]:8.5297e-05,87[&total=8,parallel=0]:5.68614e-05)N87[&total=0,parallel=0]:1e-06,(88[&total=0,parallel=0]:9.47651e-06,((89[&total=0,parallel=0]:1.89535e-05,90[&total=4,parallel=0]:5.68983e-05)N90[&total=0,parallel=0]:1e-06,((91[&total=0,parallel=0]:1.89535e-05,92[&total=1,parallel=0]:2.8431e-05)N92[&total=0,parallel=0]:9.47672e-06,(93[&total=8,parallel=0]:7.58162e-05,94[&total=9,parallel=0]:9.47715e-05)N93[&total=0,parallel=0]:1e-06)N91[&total=0,parallel=0]:1e-06)N89[&total=0,parallel=0]:1e-06)N88[&total=0,parallel=0]:9.4766e-06)N86[&total=0,parallel=0]:1e-06)N83[&total=0,parallel=0]:1e-06)N81[&total=0,parallel=0]:1e-06)N79[&total=0,parallel=0]:1e-06)N78[&total=2,parallel=0]:2.81056e-05)N77[&total=1,parallel=0]:3.79072e-05)N76[&total=6,parallel=0]:7.58266e-05)N72[&total=0,parallel=0]:1.91484e-05)N70[&total=56,parallel=0]:0.000436209)N61[&total=1,parallel=0]:1.87358e-05)N53[&total=0,parallel=0]:1e-06)N48[&total=0,parallel=0]:1e-06)N45[&total=17,parallel=0]:0.000189782)N41[&total=2,parallel=0]:2.83595e-05)N20[&total=13,parallel=0]:0.000142182)N18[&total=0,parallel=0]:1e-06)N8[&total=4,parallel=0]:3.72895e-05)N7[&total=79,parallel=0]:0.000679105)N6[&total=23,parallel=0]:0.000213168)N4[&total=92,parallel=0]:0.000935483)N3[&total=111,parallel=0]:0.00107806)N1[&total=0,parallel=0];
+End;

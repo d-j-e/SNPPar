@@ -34,14 +34,11 @@ coming soon...
 ## Optional Requirement:
 [FastML](http://fastml.tau.ac.il/)
 
-# Installing BioPython, ETE3 and TreeTime
-All are available through 'pip'
+# Installing SNPPar
 
-* pip install biopython
+* pip install git+https://github.com/d-j-e/SNPPar
 
-* pip install ete3
-
-* pip install phylo-treetime
+* This will also install any dependacies.
 
 # Input requirements:
 
@@ -177,6 +174,9 @@ python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H
   * Down_Gene: Nearest gene downstream (3') of mutation event
   * Down_Gene_Strand: Strand on which downstream gene occurs (same as Strand)
   * Down_Gene_Distance: Base pair distance from mutation event to downstream gene
+
+# Test Data
+In the folder 'test_data' is a SNP table and phylogenetic tree from the simulated data set. These, along with the genbank reference 'NC_00962_3_1.gbk' can be used to test your installation. The expected outputs are included in the subfolder 'test_data/test_outputs'.
 
 # Important Note
 SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are ***extremely unreliable*** - Indeed the tree has no homoplastic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.

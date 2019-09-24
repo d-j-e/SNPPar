@@ -1,0 +1,3 @@
+Position	Type	Ancestor_Node	Derived_Node	Ancestor_Call	Derived_Call	Gene	Strand	Codon	Codon_Position	Ancestor_Codon	Derived_Codon	Ancestor_A.A.	Derived_A.A.	Change	Up_Gene	Up_Gene_Strand	Up_Gene_Distance	Down_Gene	Down_Gene_Strand	Down_Gene_Distance
+2512836	intragenic	N1	N2	G	A	Rv2241	1	100	1	GTG	ATG	V	M	NS	-	-	-	-	-	-
+2512836	intragenic	N21	7194-05	G	A	Rv2241	1	100	1	GTG	ATG	V	M	NS	-	-	-	-	-	-
