@@ -10,7 +10,7 @@ setup(
     packages=['snppar'],
     scripts=['scripts/snppar.py'],
     entry_points={
-        'console_scripts': ['snppar = snppar.snppar:main']
+        'console_scripts': ['snppar = snppar:main']
     },
     package_dir = {'snppar': 'scripts'},
     url='https://github.com/d-j-e/SNPPar',
