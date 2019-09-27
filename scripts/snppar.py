@@ -203,6 +203,7 @@ def readSNPTable(infile, log):
 				count +=1
 			else:
 				ignored.append(snp)
+				logPrint(log, "invariant position removed: " + snp, 'INFO')
 	strains.pop(0) # remove SNP column header
 	strains_used = []
 	for strain in strains:
