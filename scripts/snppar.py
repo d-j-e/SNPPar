@@ -105,8 +105,10 @@ def setLog(directory):
 	dt_object = datetime.fromtimestamp(timestamp)
 	time = dt_object.strftime("%Y-%m-%d_%H-%M-%S.%f")
 	log = directory + time + "_log.txt"
-	print(log)
-	outputToFile(log, time + ": Log started\n")
+	message = "\nLog started: ("+ log +")"
+	print(message)
+	message = time + ": INFO : Log started: ("+ log +")\n"
+	outputToFile(log, message)
 	return log
 
 def logPrint(log, message, message_type):
