@@ -1,0 +1,80 @@
+2019-09-27_13-45-14.756689: INFO : Log started: (~/GitHub/SNPPar/test_data/test_outputs/2019-09-27_13-45-14.756689_log.txt)
+**** EDITED TO REMOVE IDENTIFYING PATH ****
+2019-09-27_13:45:14.759081: INFO : SNPPar:	Parallel SNP Finder V0.0.7
+	(utilising TreeTime for ASR)
+2019-09-27_13:45:14.759422: INFO : Reading SNP table from ~/GitHub/SNPPar/test_data/MTB_Global_L2_alleles.csv
+2019-09-27_13:45:15.035725: INFO : Finished reading 4507 SNPs in total
+...keeping 4507 variable SNPs and ignoring 0 SNPs
+that are non-variable among the 94 isolates
+2019-09-27_13:45:15.036383: INFO : Reading Genbank file from ~/GitHub/SNPPar/test_data/NC_00962_3_1.gbk
+2019-09-27_13:45:15.802432: INFO : Found 3906 genes
+2019-09-27_13:45:15.802831: INFO : Reading tree from ~/GitHub/SNPPar/test_data/MTB_Global_L2.tre...
+2019-09-27_13:45:15.808977: INFO : Tree and SNP table have same isolates
+2019-09-27_13:45:15.809330: INFO : Parsing SNPs to find bi-, tri- and quadallelic SNPs...
+Also testing if biallelic SNPs are potentially homoplastic
+2019-09-27_13:45:17.070697: INFO : Biallelic SNPs (>1 one isolate): 1493
+Biallelic SNP patterns tested: 54
+Paraphyletic SNPs found: 1
+Triallelic SNPs found: 0
+Quadallelic SNPs found: 0
+
+Total SNPs for mapping: 1
+2019-09-27_13:45:17.071917: INFO : Assigning monophyletic SNPs to genes
+2019-09-27_13:45:17.091276: INFO : Of the 4506 monophyletic SNPs for testing, 476 are intergenic, and 4046 are intragenic
+2019-09-27_13:45:17.091713: INFO : 16 SNPs occur in overlapping genes
+2019-09-27_13:45:17.118701: INFO : Assigning SNPs to map to genes
+2019-09-27_13:45:17.119426: INFO : Of the 1 SNPs to map for testing, 0 are intergenic, and 1 are intragenic
+2019-09-27_13:45:17.121012: INFO : Running TreeTime: treetime ancestral --aln ~/GitHub/SNPPar/test_data/test_outputs/snps_to_map.mfasta --tree ~/GitHub/SNPPar/test_data/MTB_Global_L2.tre --outdir ~/GitHub/SNPPar/test_data/test_outputs/treetime_out/ --report-ambiguous --verbose 2
+2019-09-27_13:45:19.862480: INFO : stdout: 
+0.00	-TreeAnc: set-up
+
+Inferred GTR model:
+Substitution rate (mu): 1.0
+
+Equilibrium frequencies (pi_i):
+  A: 0.2512
+  C: 0.2325
+  G: 0.2716
+  T: 0.2325
+  -: 0.0122
+
+Symmetrized rates from j->i (W_ij):
+	A	C	G	T	-
+  A	0	1.281	1.5313	1.281	1.281
+  C	1.281	0	1.2765	1.2811	1.2811
+  G	1.5313	1.2765	0	1.2765	1.2765
+  T	1.281	1.2811	1.2765	0	1.2811
+  -	1.281	1.2811	1.2765	1.2811	0
+
+Actual rates from j->i (Q_ij):
+	A	C	G	T	-
+  A	0	0.3218	0.3847	0.3218	0.3218
+  C	0.2978	0	0.2968	0.2978	0.2978
+  G	0.4159	0.3467	0	0.3467	0.3467
+  T	0.2978	0.2978	0.2968	0	0.2978
+  -	0.0156	0.0156	0.0156	0.0156	0
+
+
+--- alignment including ancestral nodes saved as  
+	 ~/GitHub/SNPPar/test_data/test_outputs/treetime_out/ancestral_sequences.fasta
+
+--- tree saved in nexus format as  
+	 ~/GitHub/SNPPar/test_data/test_outputs/treetime_out/annotated_tree.nexus
+
+2019-09-27_13:45:19.863364: INFO : Extracting mutation events from ASR results...
+2019-09-27_13:45:19.865968: INFO : Extracting internal node sequences from ASR results...
+2019-09-27_13:45:19.867925: INFO : Processing mapped mutation events...
+2019-09-27_13:45:19.868309: INFO : Processing monophyletic mutation events...
+2019-09-27_13:45:21.645923: INFO : Combining monophyletic and mapped mutation events
+Also combining monophyletic and mapped node sequences...
+2019-09-27_13:45:21.654527: INFO : Writing node sequences to ~/GitHub/SNPPar/test_data/test_outputs/node_sequences.fasta
+2019-09-27_13:45:21.814610: INFO : Assigning coding consequenses to the mutation events...
+2019-09-27_13:45:23.089037: INFO : 2939 non-synonymous changes, 1109 synonymous changes, and 476 SNP events in non-coding regions
+2019-09-27_13:45:23.089696: INFO : Parsing all mutation events...
+2019-09-27_13:45:23.092611: INFO : Found 2 mutation events that are parallel
+2019-09-27_13:45:23.093050: INFO : Writing all calls at parallel event positions to ~/GitHub/SNPPar/test_data/test_outputs/parallel_events_all_calls.tsv
+2019-09-27_13:45:23.098465: INFO : Writing all mutation events to ~/GitHub/SNPPar/test_data/test_outputs/all_mutation_events.tsv
+2019-09-27_13:45:23.352338: INFO : Mapping mutation events to NEXUS tree: ~/GitHub/SNPPar/test_data/test_outputs/node_labelled_nexus.tre
+2019-09-27_13:45:23.357725: INFO : Also mapping mutation events to Newick NHX tree: ~/GitHub/SNPPar/test_data/test_outputs/node_labelled_newick.tre
+2019-09-27_13:45:23.362279: INFO : Cleaning up intermediate files...
+2019-09-27_13:45:23.380770: INFO : ...Terminé
