@@ -12,16 +12,17 @@
 #
 # Example command:
 '''
-python snppar.py -s snps.csv -g genbank.gb -t tree.tre
+snppar -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 13/9/2019
-# Changes:	Ignores 'split' genes in genbank reference - warning given
+# Last modified - 30/9/2019
+# Recent Changes:	
+#			Ignores 'split' genes in genbank reference - warning given
 #			SNPs can now be read in from MFASTA file (also requires list of SNP positions)
 #			Added log file
 #			Extended logging to ASR output
 #			Added fastml execute command to options (default: PATH i.e. 'fastml')
-#
+#			Added split gene coordinates to warning
 #
 #	personal 'lazy' fastml setup
 #	fastml_exec = "~/Downloads/FastML.v3.1/programs/fastml/fastml"
@@ -791,7 +792,6 @@ def mapSNPs(snps_to_map, snptable, strains, tree_name, prefix,log):
 						"-mh","-qf","-b"])
 	message = "\nRunning fastml: " + fastml_command+"\n"
 	logPrint(log, message, 'INFO')
-#	os.system(fastml_command)
 	executeCommand(fastml_command, log)
 	fastml_tree = Tree(fastml_tree_name,format=1)
 	message = "\nExtracting internal node sequences from ASR results..."
@@ -817,7 +817,6 @@ def mapSNPsTT(snps_to_map, snptable, strains, tree_name, directory, tree, prefix
 	treetime_command = " ".join(["treetime ancestral --aln",aln_file_name,"--tree",tree_name,"--outdir",output_dir,"--report-ambiguous --verbose 2"])
 	message = "\nRunning TreeTime: " + treetime_command+"\n"
 	logPrint(log, message, 'INFO')
-#	os.system(treetime_command)
 	executeCommand(treetime_command, log)
 	message = "\nExtracting mutation events from ASR results..."
 	logPrint(log, message, 'INFO')
@@ -855,7 +854,7 @@ def makeGeneIndex(geneannot,sequenceLength,log):
 				tag = feature
 				feature_list.append([start,stop,feature_count,strand])
 			else:
-				message = "Split gene found in Genbank reference\nThis gene will not be included in the results"
+				message = "Split gene found in Genbank reference\nThis gene will not be included in the results: " + str(feature.location)
 				logPrint(log, message, 'WARNING')
 		feature_count += 1
 	feature_slice = []
@@ -2132,13 +2131,6 @@ def main():
 	if not arguments.no_clean_up:
 		cleanUp(directory,prefix,arguments.fastml,log)
 	printEnd(log)
-	
-# make mfasta of all SNPs for each gene with reported parallel or revertant SNP(s)
-#	gene_tags = makeMFASTA(geneannot,gene_list,gene_snps,intergenic,snptable,strains,prefix)
-
-# get minimum-spanning genotype network (and graph statistics) for each gene with reported parallel or revertant SNP(s) 
-#	gene_statistics, graph_statistics = makeGraphs(gene_tags, prefix)
-
 	return
 
 if __name__ == '__main__':
