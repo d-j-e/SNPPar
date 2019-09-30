@@ -38,11 +38,11 @@ coming soon...
 
 * pip install git+https://github.com/d-j-e/SNPPar
 
-This will also install any dependencies.
+This will also install any requirements above, but not FastML.
 
 # Input requirements:
 
-The input tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is better...), and in Newick format.
+The input tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is much better...), and in Newick format. Also, the branch lengths in the tree should be distance-based not, for example, no. of SNPs on each branch.
 
 SNPPar takes either a SNP table (a small example is provided below) or a MFASTA file with a second file with the SNP positions (in same order)
 
@@ -72,16 +72,16 @@ And SNP Position file
 
 Note that ambiguous and/or missing calls should be indicated by a '-'.
 
-Also, SNPPar currently requires the GenBank version of the reference genome (same sequence as used to map the reads!)
+Finally, SNPPar currently requires the GenBank version of the reference genome (same sequence as used to map the reads!)
 
-Note: If any gene is split in the reference (including across the origin of the reference), the program will ingnore this gene, but will give a warning to user.
+Note: If any gene is split in the reference (including across the origin of the reference), the program will ingnore this gene, but will give a warning to user (see **Logging** below).
 
 # Running SNPPar
 
 
-    python snppar.py -h
+    snppar -h
 
-    usage: snppar.py [-h] [-s SNPTABLE] [-m MFASTA] [-P SNP_POSITION_LIST] -t TREE
+    usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-P SNP_POSITION_LIST] -t TREE
                  -g GENBANK [-d DIRECTORY] [-p PREFIX] [-S] [-H] [-C] [-R]
                  [-a] [-n] [-e] [-f] [-x FASTML_EXECUTE] [-c] [-u]
 
@@ -122,19 +122,19 @@ Note: If any gene is split in the reference (including across the origin of the 
 
 ## To get parallel SNPs with all SNP reported for each position (i.e. default settings!):
 
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
+snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
 
 ## To only map the SNPs back to the tree:
 	
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
+snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
 
 ## To get all of the homoplastic events:
 	
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -R -C -H
+snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -R -C -H
 
 ## To get a list of only the homoplastic events (e.g. to remove them)
 
-python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H 
+snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H 
 
 # Outputs (default)
 
@@ -174,6 +174,9 @@ python snppar.py -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a -n -H
   * Down_Gene: Nearest gene downstream (3') of mutation event
   * Down_Gene_Strand: Strand on which downstream gene occurs (same as Strand)
   * Down_Gene_Distance: Base pair distance from mutation event to downstream gene
+
+# Logging
+SNPPar now includes logging of all (expected) events to a log file. There are three levels of messages; 'INFO' (Information), 'WARNING', and 'CRITICAL'. All three are *always* reported in the log file. 'WARNING' are for problems such as invariant SNP call or split genes in the GenBank reference which do not affect the running of SNPPar, though these are excluded in either case, which may affect the user experience(!) 'CRITICAL' are for problems which result in the immediate termination of the program. These need to be resolved before SNPPar will run successfully.
 
 # Test Data
 In the folder 'test_data' is a SNP table and phylogenetic tree from the simulated data set. These, along with the genbank reference 'NC_00962_3_1.gbk', can be used to test your installation. The expected outputs are included in the subfolder 'test_data/test_outputs'.
