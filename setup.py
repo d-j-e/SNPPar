@@ -22,7 +22,7 @@ setup(
                       'Reports both the parallel events and all mutation events.'
                       'Also maps the SNPs to the tree.'),
     install_requires=[
-        'biopython',
+        'biopython>=1.66',
         'ete3',
         'phylo-treetime'
     ],
