@@ -78,46 +78,45 @@ Note: If any gene is split in the reference (including across the origin of the 
 
 #Running SNPPar
 
-
     snppar -h
+    usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST] -t TREE -g
+              GENBANK [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-a] [-n]
+              [-e] [-c] [-u] [-f] [-x FASTML_EXECUTE]
 
-    usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-P SNP_POSITION_LIST] -t TREE
-                 -g GENBANK [-d DIRECTORY] [-p PREFIX] [-S] [-H] [-C] [-R]
-                 [-a] [-n] [-e] [-f] [-x FASTML_EXECUTE] [-c] [-u]
-
-    SNPPar: Parallel SNP Finder V0.0.7
+    SNPPar: Parallel/homoplasic SNP Finder V0.1dev
 
     optional arguments:
-      -h, --help            show this help message and exit
-      -s SNPTABLE, --snptable SNPTABLE
-                        SNP table (i.e. RedDog output)
-      -m MFASTA, --mfasta MFASTA
-                        SNPs in MFASTA format
-      -P SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
-                        SNP position list (required for MFASTA input)
-      -t TREE, --tree TREE  Phylogenetic tree (required)
-      -g GENBANK, --genbank GENBANK
-                        Genbank reference (required)
-      -d DIRECTORY, --directory DIRECTORY
-                        Output directory
-      -p PREFIX, --prefix PREFIX
-                        Prefix to add to output files
-      -S, --strict          Flag to output strict parallel calls (for testing)
-      -H, --homoplastic     Flag for reporting of all homoplastic calls
-      -C, --convergent      Flag for reporting of convergent calls
-      -R, --revertant       Flag for reporting of revertant calls
-      -a, --no_all_calls    Flag to turn off reporting of all mutation events at
-                        each call position
-      -n, --no_parallel     Flag to turn off parallel calls output
-      -e, --no_all_events   Flag to turn off reporting of all mutation events
-      -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
-      -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
-                            Command to execute fastML (default command: "fastml"
-                            i.e. on PATH)
-      -c, --counting        Flag to display counts during SNP testing - warning:
-                        slow with large data sets
-      -u, --no_clean_up     Flag to turn off deletion of intermediate files on
-                        completion of run
+    -h, --help            show this help message and exit
+    -s SNPTABLE, --snptable SNPTABLE
+                          SNP table (i.e. RedDog output)
+    -m MFASTA, --mfasta MFASTA
+                          SNPs in MFASTA format
+    -l SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
+                          SNP position list (required for MFASTA input)
+    -t TREE, --tree TREE  Phylogenetic tree (required)
+    -g GENBANK, --genbank GENBANK
+                          Genbank reference (required)
+    -d DIRECTORY, --directory DIRECTORY
+                          Output directory
+    -p PREFIX, --prefix PREFIX
+                          Prefix to add to output files
+    -P, --parallel        Flag for reporting of parallel calls
+    -S, --strict          Flag to output strict parallel calls (for testing,
+                          sets '-P' to True")
+    -C, --convergent      Flag for reporting of convergent calls
+    -R, --revertant       Flag for reporting of revertant calls
+    -a, --no_all_calls    Flag to turn off reporting of all events at each call
+                          position (homoplasic reporting)
+    -n, --no_homoplasic   Flag to turn off homoplasic calls output
+    -e, --no_all_events   Flag to turn off reporting of all mutation events
+    -c, --counting        Flag to display counts during SNP testing - warning:
+                          slow with large data sets
+    -u, --no_clean_up     Flag to turn off deletion of intermediate files on
+                          completion of run
+    -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
+    -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
+                          Command to execute fastML (default command: "fastml"
+                          i.e. on PATH)
 
 #Example Commands
 ##To get homoplasic SNPs with all SNPs reported for each position (i.e. default settings!):

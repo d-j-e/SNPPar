@@ -137,7 +137,7 @@ def log(log, message, message_type):
 	return
 
 def echoUserCommand(command,log):
-	message = "\nUser command: " + " ".join(command) + '\n'
+	message = "\nUser command: snppar " + " ".join(command[1:]) + '\n'
 	logPrint(log, message, 'INFO')
 	return
 
