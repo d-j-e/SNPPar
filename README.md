@@ -5,18 +5,15 @@
 # SNPPar
 Parallel/Homoplasic SNP Finder
 
-SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic tree - more specifically, it searches for those SNPs that are:
-    parallel - same mutation (eg. A \~> T) @ same position in two (or more) unrelated groups/isolates
-    convergent - different mutation in resulting in same base (eg. A \~> T, C \~> T) @ same position in two (or more) unrelated groups/isolates
-    and/or revertant - mutation back to ancestral state (eg. A \~> T \~> A)
+SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic tree - more specifically, it searches for those SNPs that are: parallel - same mutation (eg. A \~> T) @ same position in two (or more) unrelated groups/isolates; convergent - different mutation in resulting in same base (eg. A \~> T, C \~> T) @ same position in two (or more) unrelated groups/isolates; and/or revertant - mutation back to ancestral state (eg. A \~> T \~> A)
 
-By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available (though much, much slower)
+By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML isinstalled (though much, much slower)
 
 Current Version: V0.1dev
 
 # Home:
 
-https://github.com/d-j-e/SNPPar (currently private)
+https://github.com/d-j-e/SNPPar
 
 Please use the SNPPar 'Issues' page on GitHub if you have any problems or find any errors in the output. 
 
@@ -88,64 +85,66 @@ Note: If any gene is split in the reference (including across the origin of the 
 
     snppar -h
     usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST] -t TREE -g
-              GENBANK [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-a] [-n]
-              [-e] [-c] [-u] [-f] [-x FASTML_EXECUTE]
+                  GENBANK [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-A] [-a]
+                  [-n] [-e] [-c] [-u] [-f] [-x FASTML_EXECUTE]
 
     SNPPar: Parallel/homoplasic SNP Finder V0.1dev
 
     optional arguments:
-    -h, --help            show this help message and exit
-    -s SNPTABLE, --snptable SNPTABLE
-                          SNP table (i.e. RedDog output)
-    -m MFASTA, --mfasta MFASTA
-                          SNPs in MFASTA format
-    -l SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
-                          SNP position list (required for MFASTA input)
-    -t TREE, --tree TREE  Phylogenetic tree (required)
-    -g GENBANK, --genbank GENBANK
-                          Genbank reference (required)
-    -d DIRECTORY, --directory DIRECTORY
-                          Output directory
-    -p PREFIX, --prefix PREFIX
-                          Prefix to add to output files
-    -P, --parallel        Flag for reporting of parallel calls
-    -S, --strict          Flag to output strict parallel calls (for testing,
-                          sets '-P' to True")
-    -C, --convergent      Flag for reporting of convergent calls
-    -R, --revertant       Flag for reporting of revertant calls
-    -a, --no_all_calls    Flag to turn off reporting of all events at each call
-                          position (homoplasic reporting)
-    -n, --no_homoplasic   Flag to turn off homoplasic calls output
-    -e, --no_all_events   Flag to turn off reporting of all mutation events
-    -c, --counting        Flag to display counts during SNP testing - warning:
-                          slow with large data sets
-    -u, --no_clean_up     Flag to turn off deletion of intermediate files on
-                          completion of run
-    -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
-    -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
-                          Command to execute fastML (default command: "fastml"
-                          i.e. on PATH)
+      -h, --help            show this help message and exit
+      -s SNPTABLE, --snptable SNPTABLE
+                            SNP table (i.e. RedDog output)
+      -m MFASTA, --mfasta MFASTA
+                            SNPs in MFASTA format
+      -l SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
+                            SNP position list (required for MFASTA input)
+      -t TREE, --tree TREE  Phylogenetic tree (required)
+      -g GENBANK, --genbank GENBANK
+                            Genbank reference (required)
+      -d DIRECTORY, --directory DIRECTORY
+                            Output directory
+      -p PREFIX, --prefix PREFIX
+                            Prefix to add to output files
+      -P, --parallel        Flag for reporting of parallel calls
+      -S, --strict          Flag to output strict parallel calls (for testing,
+                            sets '-P' to True")
+      -C, --convergent      Flag for reporting of convergent calls
+      -R, --revertant       Flag for reporting of revertant calls
+      -A, --all_homoplasic_types
+                            Flag for reporting of all three homoplasic types
+      -a, --no_all_calls    Flag to turn off reporting of all events at each call
+                            position (homoplasic reporting)
+      -n, --no_homoplasic   Flag to turn off homoplasic calls output
+      -e, --no_all_events   Flag to turn off reporting of all mutation events
+      -c, --counting        Flag to display counts during SNP testing - warning:
+                            slow with large data sets
+      -u, --no_clean_up     Flag to turn off deletion of intermediate files on
+                            completion of run
+      -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
+      -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
+                            Command to execute fastML (default command: "fastml"
+                            i.e. on PATH)
 
 # Example Commands
 ## To get homoplasic SNPs including all events reported for each (i.e. default settings):
 
-  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
+    snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
 
 ## To only map the SNPs back to the tree:
 	
-  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
+    snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
 
 ## To report only parallel events:
 	
-  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -P -n -e -a
+    snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -P -a -n -e
 
 ## To report all three kinds of the homoplasic events:
 	
-  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -A
+    snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -A
 
 ## To get only the homoplasic events (e.g. to remove them)
 
-  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a
+    snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a
 
 # Outputs (default)
 
