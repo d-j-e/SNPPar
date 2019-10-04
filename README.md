@@ -119,7 +119,7 @@ Note: If any gene is split in the reference (including across the origin of the 
                           i.e. on PATH)
 
 # Example Commands
-## To get homoplasic SNPs with all SNPs reported for each position (i.e. default settings!):
+## To get homoplasic SNPs including all events reported for each (i.e. default settings):
 
   snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk>
 
@@ -127,11 +127,15 @@ Note: If any gene is split in the reference (including across the origin of the 
 	
   snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -n 
 
-## To get all of the homoplasic events:
+## To report only parallel events:
 	
-  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -R -C -H
+  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -P -n -e -a
 
-## To get a list of only the homoplasic events (e.g. to remove them)
+## To report all three kinds of the homoplasic events:
+	
+  snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -A
+
+## To get only the homoplasic events (e.g. to remove them)
 
   snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a
 
@@ -189,7 +193,7 @@ Then to run SNPPar:
 
 ## Example tree from test_data
 <p align="left"> 
-<img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="750">
+<img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="800">
 </p>
 
 # Converting trees to substitutions/site using TreeTime

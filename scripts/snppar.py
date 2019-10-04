@@ -58,6 +58,7 @@ def parseArguments():
 	parser.add_argument('-S', '--strict', default=False, action="store_true", help='Flag to output strict parallel calls (for testing, sets \'-P\' to True")')
 	parser.add_argument('-C', '--convergent', default=False, action="store_true", help='Flag for reporting of convergent calls')
 	parser.add_argument('-R', '--revertant', default=False, action="store_true", help='Flag for reporting of revertant calls')
+	parser.add_argument('-A', '--all_homoplasic_types', default=False, action="store_true", help='Flag for reporting of all three homoplasic types')
 	parser.add_argument('-a', '--no_all_calls', default=False, action="store_true", help='Flag to turn off reporting of all events at each call position (homoplasic reporting)')
 	parser.add_argument('-n', '--no_homoplasic', default=False, action="store_true", help='Flag to turn off homoplasic calls output')
 	parser.add_argument('-e', '--no_all_events', default=False, action="store_true", help='Flag to turn off reporting of all mutation events')
@@ -2063,6 +2064,10 @@ def main():
 	log = setLog(directory)
 	if arguments.strict:
 		arguments.parallel = True
+	if arguments.all_homoplasic_types:
+		arguments.parallel = True
+		arguments.convergent = True
+		arguments.revertant = True
 	message = '\nSNPPar:\tParallel SNP Finder '+ version
 	if arguments.fastml:
 		ASR = 'FastML'
