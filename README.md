@@ -189,7 +189,7 @@ Then to run SNPPar:
 
 ## Example tree from test_data
 <p align="left"> 
-<img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="400">
+<img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="750">
 </p>
 
 # Converting trees to substitutions/site using TreeTime
