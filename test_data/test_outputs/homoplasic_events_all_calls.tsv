@@ -1,3 +1,5 @@
 Position	Type	Ancestor_Node	Derived_Node	Ancestor_Call	Derived_Call	Gene	Strand	Codon	Codon_Position	Ancestor_Codon	Derived_Codon	Ancestor_A.A.	Derived_A.A.	Change	Up_Gene	Up_Gene_Strand	Up_Gene_Distance	Down_Gene	Down_Gene_Strand	Down_Gene_Distance
-2512836	intragenic	N1	N2	G	A	Rv2241	1	100	1	GTG	ATG	V	M	NS	-	-	-	-	-	-
-2512836	intragenic	N21	7194-05	G	A	Rv2241	1	100	1	GTG	ATG	V	M	NS	-	-	-	-	-	-
+849993	intragenic	N2	88_S69_L001	C	T	Rv0755c	-1	16	3	ATG	ATA	M	I	NS	-	-	-	-	-	-
+849993	intragenic	N15	Zhang671807	C	T	Rv0755c	-1	16	3	ATG	ATA	M	I	NS	-	-	-	-	-	-
+1100141	intragenic	N16	Casali229945	A	G	Rv0983	1	359	2	GAC	GGC	D	G	NS	-	-	-	-	-	-
+1100141	intragenic	N27	N32	A	G	Rv0983	1	359	2	GAC	GGC	D	G	NS	-	-	-	-	-	-
