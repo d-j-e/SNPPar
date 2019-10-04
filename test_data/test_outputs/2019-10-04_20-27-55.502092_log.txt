@@ -1,0 +1,80 @@
+2019-10-04_20-27-55.502092: INFO : Log started: (test_outputs/2019-10-04_20-27-55.502092_log.txt)
+2019-10-04_20:27:55.502639: INFO : SNPPar:	Parallel SNP Finder V0.1dev
+	(utilising TreeTime for ASR)
+2019-10-04_20:27:55.503703: INFO : User command: snppar -s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d test_outputs
+2019-10-04_20:27:55.504085: INFO : Reading SNP table from MTB_Global_L2_alleles.csv
+2019-10-04_20:27:55.676560: INFO : Finished reading 4401 SNPs in total
+...keeping 4401 variable SNPs and ignoring 0 SNPs
+that are non-variable among the 94 isolates
+2019-10-04_20:27:55.677353: INFO : Reading Genbank file from NC_00962_3_1.gbk
+2019-10-04_20:27:56.499769: INFO : Found 3906 genes
+2019-10-04_20:27:56.500221: INFO : Reading tree from MTB_Global_L2.tre...
+2019-10-04_20:27:56.506518: INFO : Tree and SNP table have same isolates
+2019-10-04_20:27:56.506932: INFO : Parsing SNPs to find bi-, tri- and quadallelic SNPs...
+Also testing if biallelic SNPs are homoplasic
+2019-10-04_20:27:57.756436: INFO : Biallelic SNPs (>1 one isolate): 1440
+Biallelic SNP patterns tested: 51
+Paraphyletic SNPs found: 2
+Triallelic SNPs found: 0
+Quadallelic SNPs found: 0
+
+Total SNPs for mapping: 2
+2019-10-04_20:27:57.757686: INFO : Assigning monophyletic SNPs to genes
+2019-10-04_20:27:57.777765: INFO : Of the 4399 monophyletic SNPs for testing, 489 are intergenic, and 3922 are intragenic
+2019-10-04_20:27:57.778355: INFO : 12 SNPs occur in overlapping genes
+2019-10-04_20:27:57.803245: INFO : Assigning SNPs to map to genes
+2019-10-04_20:27:57.803763: INFO : Of the 2 SNPs to map for testing, 0 are intergenic, and 2 are intragenic
+2019-10-04_20:27:57.805756: INFO : Running TreeTime: treetime ancestral --aln test_outputs/snps_to_map.mfasta --tree MTB_Global_L2.tre --outdir test_outputs/treetime_out/ --report-ambiguous --verbose 2
+2019-10-04_20:28:00.593646: INFO : stdout: 
+0.00	-TreeAnc: set-up
+
+Inferred GTR model:
+Substitution rate (mu): 1.0
+
+Equilibrium frequencies (pi_i):
+  A: 0.2525
+  C: 0.2549
+  G: 0.2413
+  T: 0.2392
+  -: 0.0121
+
+Symmetrized rates from j->i (W_ij):
+	A	C	G	T	-
+  A	0	1.2405	1.4918	1.2434	1.2436
+  C	1.2405	0	1.2429	1.4918	1.2434
+  G	1.4918	1.2429	0	1.2456	1.2456
+  T	1.2434	1.4918	1.2456	0	1.2458
+  -	1.2436	1.2434	1.2456	1.2458	0
+
+Actual rates from j->i (Q_ij):
+	A	C	G	T	-
+  A	0	0.3132	0.3767	0.314	0.314
+  C	0.3162	0	0.3168	0.3803	0.317
+  G	0.3599	0.2999	0	0.3005	0.3005
+  T	0.2974	0.3568	0.2979	0	0.298
+  -	0.015	0.015	0.0151	0.0151	0
+
+
+--- alignment including ancestral nodes saved as  
+	 test_outputs/treetime_out/ancestral_sequences.fasta
+
+--- tree saved in nexus format as  
+	 test_outputs/treetime_out/annotated_tree.nexus
+
+2019-10-04_20:28:00.594710: INFO : Extracting mutation events from ASR results...
+2019-10-04_20:28:00.597947: INFO : Extracting internal node sequences from ASR results...
+2019-10-04_20:28:00.600181: INFO : Processing mapped mutation events...
+2019-10-04_20:28:00.600627: INFO : Processing monophyletic mutation events...
+2019-10-04_20:28:02.333624: INFO : Combining monophyletic and mapped mutation events
+Also combining monophyletic and mapped node sequences...
+2019-10-04_20:28:02.347631: INFO : Writing node sequences to test_outputs/node_sequences.fasta
+2019-10-04_20:28:02.483572: INFO : Assigning coding consequenses to the mutation events...
+2019-10-04_20:28:03.691771: INFO : 2855 non-synonymous changes, 1071 synonymous changes, and 489 SNP events in non-coding regions
+2019-10-04_20:28:03.692261: INFO : Parsing all mutation events...
+2019-10-04_20:28:03.695764: INFO : Found 4 mutation events that are homoplasic
+2019-10-04_20:28:03.696213: INFO : Writing all calls at homoplasic event positions to test_outputs/homoplasic_events_all_calls.tsv
+2019-10-04_20:28:03.700594: INFO : Writing all mutation events to test_outputs/all_mutation_events.tsv
+2019-10-04_20:28:03.941520: INFO : Mapping mutation events to NEXUS tree: test_outputs/node_labelled_nexus.tre
+2019-10-04_20:28:03.947028: INFO : Also mapping mutation events to Newick NHX tree: test_outputs/node_labelled_newick.tre
+2019-10-04_20:28:03.950962: INFO : Cleaning up intermediate files...
+2019-10-04_20:28:03.966763: INFO : ...Terminado
