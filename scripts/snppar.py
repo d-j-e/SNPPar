@@ -59,7 +59,7 @@ def parseArguments():
 	parser.add_argument('-C', '--convergent', default=False, action="store_true", help='Flag for reporting of convergent calls')
 	parser.add_argument('-R', '--revertant', default=False, action="store_true", help='Flag for reporting of revertant calls')
 	parser.add_argument('-a', '--no_all_calls', default=False, action="store_true", help='Flag to turn off reporting of all events at each call position (homoplasic reporting)')
-	parser.add_argument('-h', '--no_homoplasic', default=False, action="store_true", help='Flag to turn off homoplasic calls output')
+	parser.add_argument('-n', '--no_homoplasic', default=False, action="store_true", help='Flag to turn off homoplasic calls output')
 	parser.add_argument('-e', '--no_all_events', default=False, action="store_true", help='Flag to turn off reporting of all mutation events')
 	parser.add_argument('-c', '--counting', default=False, action="store_true", help='Flag to display counts during SNP testing - warning: slow with large data sets')
 	parser.add_argument('-u', '--no_clean_up', default=False, action="store_true", help='Flag to turn off deletion of intermediate files on completion of run')
