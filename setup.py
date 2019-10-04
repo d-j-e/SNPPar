@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='snppar',
-    version='0.0.7',
+    version='0.1dev',
     author='David Edwards',
     author_email='David.Edwards@monash.edu',
     packages=['snppar'],
@@ -15,12 +15,12 @@ setup(
     package_dir = {'snppar': 'scripts'},
     url='https://github.com/d-j-e/SNPPar',
     license='LICENSE.txt',
-    description='Parallel SNP Finder for Bacteria',
+    description='Parallel/Homoplasic SNP Finder for Bacteria',
     long_description=('This program is designed to take a SNP'
                       'alignment and a phylogenetic tree in order to'
-                      'find any parallel SNPs (and other homoplasies if required)'
-                      'Reports both the parallel events and all mutation events.'
-                      'Also maps the SNPs to the tree.'),
+                      'find any homoplasic SNPs, and define them if required)'
+                      'By default, reports both the homoplasic events and '
+                      'all mutation events. Also maps the SNPs to the tree.'),
     install_requires=[
         'biopython>=1.66',
         'ete3',
