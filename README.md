@@ -31,8 +31,13 @@ coming soon...
 
 [GNU General Public License v3.0](https://github.com/d-j-e/SNPPar/blob/master/LICENSE)
 
+# Language:
+[Python3](https://www.python.org/downloads/) (v3.6+)
+
 # Requirements:
-[Python3](https://www.python.org/downloads/) v3.6+, [BioPython](https://biopython.org/) v1.66+, [ETE3](http://etetoolkit.org/), [TreeTime](https://github.com/neherlab/treetime) 
+[BioPython](https://biopython.org/) (v1.66+)
+[ETE3](http://etetoolkit.org/)
+[TreeTime](https://github.com/neherlab/treetime)
 
 ## Optional Requirement:
 [FastML](http://fastml.tau.ac.il/)
@@ -41,7 +46,7 @@ coming soon...
 
 * pip install git+https://github.com/d-j-e/SNPPar
 
-This will also install any requirements above (not FastML).
+This will also install the requirements above (not FastML).
 
 # Input requirements:
 
@@ -151,10 +156,11 @@ Note: If any gene is split in the reference (including across the origin of the 
 * Tree in NHX (extended Newick) and NEXUS formats
   * Internal node labels (same as found in mutation event tables)
   * Total number of mutation events (SNPs) and homoplasic mutation events on each branch (but see **Important Note** below)
-  * the NEXUS tree can be read into [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) and [iToL](https://itol.embl.de/)
-  * the NHX tree can be read by [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html) 
+  * NEXUS tree can be read into [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) and [iToL](https://itol.embl.de/)
+  * NHX tree can be read by [ggtree](https://bioconductor.org/packages/release/bioc/html/ggtree.html)
+* Log file
 
-# Explanation of header in mutation event files...
+# Explanation of header in mutation event files
 * Common results
   * Position: Position of mutation event in reference seqeunce
   * Type: Intragenic or Intergenic
@@ -181,7 +187,10 @@ Note: If any gene is split in the reference (including across the origin of the 
   * Down_Gene_Distance: Base pair distance from mutation event to downstream gene
 
 # Logging
-SNPPar now includes logging of all (expected) events to a log file. There are three levels of messages; 'INFO' (Information), 'WARNING', and 'CRITICAL'. All three are *always* reported in the log file. 'WARNING' are for problems such as invariant SNP call or split genes in the GenBank reference which do not affect the running of SNPPar, though these are excluded in either case, which may affect the user experience(!) 'CRITICAL' are for problems which result in the immediate termination of the program. These need to be resolved before SNPPar will run successfully.
+SNPPar now includes logging of all (expected) events to a log file. There are three levels of messages; 'INFO' (Information), 'WARNING', and 'CRITICAL'. All three are *always* reported in the log file.
+  'INFO' are regular runtime messages
+  'WARNING' are for problems such as invariant SNP calls or split genes in the GenBank reference which do not affect the running of SNPPar. However, these are excluded in either case, which may affect the user experience(!)
+  'CRITICAL' are for problems which result in the immediate termination of the program. These need to be resolved before SNPPar will run successfully.
 
 # Test Data
 In the folder 'test_data' is a SNP table and phylogenetic tree from the simulated data set. These, along with the genbank reference 'NC_00962_3_1.gbk', can be used to test your installation. The expected outputs are included in the subfolder 'test_data/test_outputs'.
@@ -189,7 +198,7 @@ In the folder 'test_data' is a SNP table and phylogenetic tree from the simulate
 ## Command to run test data
 Navigate from the SNPPar github folder to test_data:
 
-    cd ./test_data
+    cd test_data
 Then to run SNPPar:
 
     snppar –s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d testing
