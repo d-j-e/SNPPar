@@ -187,10 +187,9 @@ Note: If any gene is split in the reference (including across the origin of the 
 
 # Logging
 SNPPar now includes logging of all (expected) events to a log file. There are three levels of messages; 'INFO' (Information), 'WARNING', and 'CRITICAL'. All three are *always* reported in the log file.
-
-    'INFO' are regular runtime messages
-    'WARNING' are for problems such as invariant SNP calls or split genes in the GenBank reference which do not affect the running of SNPPar. However, these are excluded in either case, which may affect the user experience(!)
-    'CRITICAL' are for problems which result in the immediate termination of the program. These need to be resolved before SNPPar will run successfully.
+* 'INFO' are regular runtime messages.
+* 'WARNING' are for problems such as invariant SNP calls or split genes in the GenBank reference which do not affect the running of SNPPar. However, these are excluded in either case, which may affect the user experience(!)
+* 'CRITICAL' are for problems which result in the immediate termination of the program. These need to be resolved before SNPPar will run successfully.
 
 # Test Data
 In the folder 'test_data' is a SNP table and phylogenetic tree from the simulated data set. These, along with the genbank reference 'NC_00962_3_1.gbk', can be used to test your installation. The expected outputs are included in the subfolder 'test_data/test_outputs'.
