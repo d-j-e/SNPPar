@@ -1,0 +1,5 @@
+2019-10-08_13-53-40.247781: INFO : Log started: (Bdol_real_tree_ss/2019-10-08_13-53-40.247781_log.txt)
+2019-10-08_13:53:40.248708: INFO : SNPPar:	Parallel SNP Finder V0.1dev
+	(utilising TreeTime for ASR)
+2019-10-08_13:53:40.249382: INFO : User command: snppar -s NIHMS335194-supplement-2-alleles_chr1.csv -t lieberman2011natgen_root_ss.newick -g AU0158_ch1.gb -d Bdol_real_tree_ss -p chr1_
+2019-10-08_13:53:40.250117: INFO : Reading SNP table from NIHMS335194-supplement-2-alleles_chr1.csv
