@@ -15,10 +15,11 @@
 snppar -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 4/10/2019
+# Last modified - 8/10/2019
 # Recent Changes:	changed default reporting to homoplasic, not parallel
 #					change of some input commands as a result
 #					added user command to log output
+#					fixes on testing
 # To add (v0.2dev):	missingness report - highest SNP, isolate, overall missingness
 #
 
@@ -37,7 +38,7 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.1dev'
+version = 'V0.1.1dev'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -1471,7 +1472,7 @@ def findEvents(GetStrict, noAllCalls, getParallel, getConvergent, getRevertant, 
 										convergent.append(j)
 									if k not in convergent:
 										convergent.append(k)
-								elif (getRevertant or getHomoplastic):
+								elif (getRevertant or not noHomoplasic):
 									if mapped[j][10] == mapped[k][11]: #base change and ancestor match in pair
 										test_nodes = []
 										node = tree.search_nodes(name=mapped[j][9])[0]
@@ -1509,12 +1510,12 @@ def findEvents(GetStrict, noAllCalls, getParallel, getConvergent, getRevertant, 
 											if strict not in strict_parallel:
 												strict_parallel.append(strict)
 												strict_count += 1
-								elif (getConvergent or getHomoplastic) and mapped[j][9] == mapped[k][9]:	#same base change and different ancestor base
+								elif (getConvergent or not noHomoplasic) and mapped[j][9] == mapped[k][9]:	#same base change and different ancestor base
 									if j not in convergent:
 										convergent.append(j)
 									if k not in convergent:
 										convergent.append(k)
-								elif (getRevertant or getHomoplastic):
+								elif (getRevertant or not noHomoplasic):
 									if mapped[j][8] == mapped[k][9]: #base change and ancestor match in pair
 										test_nodes = []
 										node = tree.search_nodes(name=mapped[j][7])[0]
