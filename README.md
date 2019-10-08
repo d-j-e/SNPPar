@@ -47,7 +47,7 @@ This will also install the requirements above (not FastML).
 
 # Input requirements:
 
-The input tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is much better...), and in Newick format. Also, the branch lengths in the tree should be substitutions/site not, for example, no. of SNPs on each branch. If your tree is not in substitutions/site, you can use the TreeTime command below (TO BE DONE)
+The input tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is much better...), and in Newick format. Also, the branch lengths in the tree should be substitutions/site not, for example, no. of SNPs on each branch. (Note: you can divide the number of SNPs by the total no. of sites tested to get substitutions/site)
 
 SNPPar takes either a SNP table (a small example is provided below) or a MFASTA file with a second file with the SNP positions (in same order)
 
@@ -202,13 +202,10 @@ Then to run SNPPar:
 
     snppar –s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d testing
 
-## Example tree from test_data
+## Example tree from test_data (using FigTree)
 <p align="left"> 
 <img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="800">
 </p>
-
-# Converting trees to substitutions/site using TreeTime
-TO BE DONE
 
 # Important Note
 SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are ***extremely unreliable*** - Indeed the tree has no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
