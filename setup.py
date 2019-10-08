@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='snppar',
-    version='0.1dev',
+    version='0.1.1dev',
     author='David Edwards',
     author_email='David.Edwards@monash.edu',
     packages=['snppar'],

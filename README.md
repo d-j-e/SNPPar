@@ -9,7 +9,7 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML isinstalled (though much, much slower)
 
-Current Version: V0.1dev
+Current Version: V0.1.1dev
 
 # Home:
 
