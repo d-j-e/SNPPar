@@ -15,11 +15,12 @@
 snppar -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 8/10/2019
+# Last modified - 17/10/2019
 # Recent Changes:	changed default reporting to homoplasic, not parallel
 #					change of some input commands as a result
 #					added user command to log output
 #					fixes on testing
+#					fixed reporting of revertant SNPs
 # To add (v0.2dev):	missingness report - highest SNP, isolate, overall missingness
 #
 
@@ -38,7 +39,7 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.1.1dev'
+version = 'V0.1.2dev'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -1449,7 +1450,7 @@ def findEvents(GetStrict, noAllCalls, getParallel, getConvergent, getRevertant, 
 				same += 1
 			# test them pairwise
 			for j in range(last_item,last_item+same):
-				for k in range(i,last_item+same+1):
+				for k in range(j,last_item+same+1):
 					if not(j==k):
 						if mapped[j][2] == mapped[k][2]:		# same gene
 							if mapped[j][1] == "intergenic":		
@@ -1516,28 +1517,30 @@ def findEvents(GetStrict, noAllCalls, getParallel, getConvergent, getRevertant, 
 									if k not in convergent:
 										convergent.append(k)
 								elif (getRevertant or not noHomoplasic):
-									if mapped[j][8] == mapped[k][9]: #base change and ancestor match in pair
+									if mapped[j][8] == mapped[k][9] or mapped[j][9] == mapped[k][8]: #base change and ancestor match in pair
+										found = False
 										test_nodes = []
 										node = tree.search_nodes(name=mapped[j][7])[0]
 										for item in node.get_descendants():
 											test_nodes.append(item.name)
 										for name in test_nodes:
 											if name == mapped[k][6]:
+												found = True
 												if j not in revertant:
 													revertant.append(j)
 												if k not in revertant:
 													revertant.append(k)
-									elif mapped[j][9] == mapped[k][8]: #base change and ancestor match in pair
-										test_nodes = []
-										node = tree.search_nodes(name=mapped[k][7])[0]
-										for item in node.get_descendants():
-											test_nodes.append(item.name)
-										for name in test_nodes:
-											if name == mapped[j][6]:
-												if j not in revertant:
-													revertant.append(j)
-												if k not in revertant:
-													revertant.append(k)
+										if not found:
+											test_nodes = []
+											node = tree.search_nodes(name=mapped[k][7])[0]
+											for item in node.get_descendants():
+												test_nodes.append(item.name)
+											for name in test_nodes:
+												if name == mapped[j][6]:
+													if j not in revertant:
+														revertant.append(j)
+													if k not in revertant:
+														revertant.append(k)
 			# reset i
 			i = last_item + same
 			last_item = i

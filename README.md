@@ -7,9 +7,9 @@ Parallel/Homoplasic SNP Finder
 
 SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic tree - more specifically, it searches for those SNPs that are: parallel - same mutation (eg. A \~> T) @ same position in two (or more) unrelated groups/isolates; convergent - different mutation in resulting in same base (eg. A \~> T, C \~> T) @ same position in two (or more) unrelated groups/isolates; and/or revertant - mutation back to ancestral state (eg. A \~> T \~> A)
 
-By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML isinstalled (though much, much slower)
+By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V0.1.1dev
+Current Version: V0.1.2dev
 
 # Home:
 
