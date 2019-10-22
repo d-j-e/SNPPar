@@ -1,0 +1,80 @@
+2019-10-22_11-03-25.938748: INFO : Log started: (/Users/david/Desktop/simulated_data/git_test_outputs/2019-10-22_11-03-25.938748_log.txt)
+2019-10-22_11:03:25.940101: INFO : SNPPar:	Parallel SNP Finder V0.1.3dev
+	(utilising TreeTime for ASR)
+2019-10-22_11:03:25.940946: INFO : User command: snppar -s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d /Users/david/Desktop/simulated_data/git_test_outputs
+2019-10-22_11:03:25.941473: INFO : Reading SNP table from MTB_Global_L2_alleles.csv
+2019-10-22_11:03:26.128678: INFO : Finished reading 4401 SNPs in total
+...keeping 4401 variable SNPs and ignoring 0 SNPs
+that are non-variable among the 94 isolates
+2019-10-22_11:03:26.129186: INFO : Reading Genbank file from NC_00962_3_1.gbk
+2019-10-22_11:03:26.825814: INFO : Found 3906 genes
+2019-10-22_11:03:26.826247: INFO : Reading tree from MTB_Global_L2.tre...
+2019-10-22_11:03:26.832211: INFO : Tree and SNP table have same isolates
+2019-10-22_11:03:26.832556: INFO : Parsing SNPs to find bi-, tri- and quadallelic SNPs...
+Also testing if biallelic SNPs are homoplasic
+2019-10-22_11:03:28.055164: INFO : Biallelic SNPs (>1 one isolate): 1440
+Biallelic SNP patterns tested: 51
+Paraphyletic SNPs found: 2
+Triallelic SNPs found: 0
+Quadallelic SNPs found: 0
+
+Total SNPs for mapping: 2
+2019-10-22_11:03:28.056322: INFO : Assigning monophyletic SNPs to genes
+2019-10-22_11:03:28.075707: INFO : Of the 4399 monophyletic SNPs for testing, 489 are intergenic, and 3922 are intragenic
+2019-10-22_11:03:28.076184: INFO : 12 SNPs occur in overlapping genes
+2019-10-22_11:03:28.092666: INFO : Assigning SNPs to map to genes
+2019-10-22_11:03:28.093103: INFO : Of the 2 SNPs to map for testing, 0 are intergenic, and 2 are intragenic
+2019-10-22_11:03:28.094766: INFO : Running TreeTime: treetime ancestral --aln /Users/david/Desktop/simulated_data/git_test_outputs/snps_to_map.mfasta --tree MTB_Global_L2.tre --outdir /Users/david/Desktop/simulated_data/git_test_outputs/treetime_out/ --report-ambiguous --verbose 2
+2019-10-22_11:03:30.736273: INFO : stdout: 
+0.00	-TreeAnc: set-up
+
+Inferred sequence evolution model (saved as /Users/david/Desktop/simulated_data/git_test_outputs/treetime_out//sequence_evolution_model.txt):
+Substitution rate (mu): 1.0
+
+Equilibrium frequencies (pi_i):
+  A: 0.2525
+  C: 0.2549
+  G: 0.2413
+  T: 0.2392
+  -: 0.0121
+
+Symmetrized rates from j->i (W_ij):
+	A	C	G	T	-
+  A	0	1.2405	1.4918	1.2434	1.2436
+  C	1.2405	0	1.2429	1.4918	1.2434
+  G	1.4918	1.2429	0	1.2455	1.2456
+  T	1.2434	1.4918	1.2455	0	1.2458
+  -	1.2436	1.2434	1.2456	1.2458	0
+
+Actual rates from j->i (Q_ij):
+	A	C	G	T	-
+  A	0	0.3132	0.3767	0.3139	0.314
+  C	0.3162	0	0.3168	0.3803	0.317
+  G	0.3599	0.2999	0	0.3005	0.3005
+  T	0.2974	0.3568	0.2979	0	0.298
+  -	0.015	0.015	0.0151	0.0151	0
+
+
+--- alignment including ancestral nodes saved as  
+	 /Users/david/Desktop/simulated_data/git_test_outputs/treetime_out/ancestral_sequences.fasta
+
+--- tree saved in nexus format as  
+	 /Users/david/Desktop/simulated_data/git_test_outputs/treetime_out/annotated_tree.nexus
+
+2019-10-22_11:03:30.736937: INFO : Extracting mutation events from ASR results...
+2019-10-22_11:03:30.740533: INFO : Extracting internal node sequences from ASR results...
+2019-10-22_11:03:30.742402: INFO : Processing mapped mutation events...
+2019-10-22_11:03:30.742766: INFO : Processing monophyletic mutation events...
+2019-10-22_11:03:32.574716: INFO : Combining monophyletic and mapped mutation events
+Also combining monophyletic and mapped node sequences...
+2019-10-22_11:03:32.580576: INFO : Writing node sequences to /Users/david/Desktop/simulated_data/git_test_outputs/node_sequences.fasta
+2019-10-22_11:03:32.718423: INFO : Assigning coding consequenses to the mutation events...
+2019-10-22_11:03:33.979677: INFO : 2855 non-synonymous changes, 1071 synonymous changes, and 489 SNP events in non-coding regions
+2019-10-22_11:03:33.980294: INFO : Parsing all mutation events...
+2019-10-22_11:03:33.983855: INFO : Found 4 mutation events that are homoplasic
+2019-10-22_11:03:33.984414: INFO : Writing all calls at homoplasic event positions to /Users/david/Desktop/simulated_data/git_test_outputs/homoplasic_events_all_calls.tsv
+2019-10-22_11:03:33.990348: INFO : Writing all mutation events to /Users/david/Desktop/simulated_data/git_test_outputs/all_mutation_events.tsv
+2019-10-22_11:03:34.242071: INFO : Mapping mutation events to NEXUS tree: /Users/david/Desktop/simulated_data/git_test_outputs/node_labelled_nexus.tre
+2019-10-22_11:03:34.248015: INFO : Also mapping mutation events to Newick NHX tree: /Users/david/Desktop/simulated_data/git_test_outputs/node_labelled_newick.tre
+2019-10-22_11:03:34.252754: INFO : Cleaning up intermediate files...
+2019-10-22_11:03:34.269320: INFO : ...Finished
