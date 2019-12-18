@@ -83,47 +83,50 @@ Note: If any gene is split in the reference (including across the origin of the 
 
 # Running SNPPar
 
-    snppar -h
-    usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST] -t TREE -g
-                  GENBANK [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-A] [-a]
-                  [-n] [-e] [-c] [-u] [-f] [-x FASTML_EXECUTE]
+  snppar -h
+  usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST] [-t TREE]
+               [-g GENBANK] [-M MUTATION_EVENTS] [-d DIRECTORY] [-p PREFIX]
+               [-P] [-S] [-C] [-R] [-A] [-a] [-n] [-e] [-c] [-u] [-f]
+                [-x FASTML_EXECUTE]
 
-    SNPPar: Parallel/homoplasic SNP Finder V0.1dev
+  SNPPar: Parallel/homoplasic SNP Finder V0.3dev
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -s SNPTABLE, --snptable SNPTABLE
-                            SNP table (i.e. RedDog output)
-      -m MFASTA, --mfasta MFASTA
-                            SNPs in MFASTA format
-      -l SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
-                            SNP position list (required for MFASTA input)
-      -t TREE, --tree TREE  Phylogenetic tree (required)
-      -g GENBANK, --genbank GENBANK
-                            Genbank reference (required)
-      -d DIRECTORY, --directory DIRECTORY
-                            Output directory
-      -p PREFIX, --prefix PREFIX
-                            Prefix to add to output files
-      -P, --parallel        Flag for reporting of parallel calls
-      -S, --strict          Flag to output strict parallel calls (for testing,
-                            sets '-P' to True")
-      -C, --convergent      Flag for reporting of convergent calls
-      -R, --revertant       Flag for reporting of revertant calls
-      -A, --all_homoplasic_types
-                            Flag for reporting of all three homoplasic types
-      -a, --no_all_calls    Flag to turn off reporting of all events at each call
-                            position (homoplasic reporting)
-      -n, --no_homoplasic   Flag to turn off homoplasic calls output
-      -e, --no_all_events   Flag to turn off reporting of all mutation events
-      -c, --counting        Flag to display counts during SNP testing - warning:
-                            slow with large data sets
-      -u, --no_clean_up     Flag to turn off deletion of intermediate files on
-                            completion of run
-      -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
-      -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
-                            Command to execute fastML (default command: "fastml"
-                            i.e. on PATH)
+  optional arguments:
+    -h, --help            show this help message and exit
+    -s SNPTABLE, --snptable SNPTABLE
+                          SNP table (i.e. RedDog output)
+    -m MFASTA, --mfasta MFASTA
+                          SNPs in MFASTA format
+    -l SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
+                          SNP position list (required for MFASTA input)
+    -t TREE, --tree TREE  Phylogenetic tree (required)
+    -g GENBANK, --genbank GENBANK
+                          Genbank reference (required)
+    -M MUTATION_EVENTS, --mutation_events MUTATION_EVENTS
+                          Mutation events file (previous results)
+   -d DIRECTORY, --directory DIRECTORY
+                          Output directory
+    -p PREFIX, --prefix PREFIX
+                          Prefix to add to output files
+    -P, --parallel        Flag for reporting of parallel calls
+    -S, --strict          Flag to output strict parallel calls (for testing,
+                          sets '-P' to True")
+    -C, --convergent      Flag for reporting of convergent calls
+    -R, --revertant       Flag for reporting of revertant calls
+    -A, --all_homoplasic_types
+                          Flag for reporting of all three homoplasic types
+    -a, --no_all_calls    Flag to turn off reporting of all events at each call
+                          position (homoplasic reporting)
+    -n, --no_homoplasic   Flag to turn off homoplasic calls output
+    -e, --no_all_events   Flag to turn off reporting of all mutation events
+    -c, --counting        Flag to display counts during SNP testing - warning:
+                          slow with large data sets
+    -u, --no_clean_up     Flag to turn off deletion of intermediate files on
+                          completion of run
+    -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
+    -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
+                          Command to execute fastML (default command: "fastml"
+                          i.e. on PATH)
 
 # Example Commands
 ## To get homoplasic SNPs including all events reported for each (i.e. default settings):
