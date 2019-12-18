@@ -83,15 +83,15 @@ Note: If any gene is split in the reference (including across the origin of the 
 
 # Running SNPPar
 
-  snppar -h
-  usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST] [-t TREE]
+    snppar -h
+    usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST] [-t TREE]
                [-g GENBANK] [-M MUTATION_EVENTS] [-d DIRECTORY] [-p PREFIX]
                [-P] [-S] [-C] [-R] [-A] [-a] [-n] [-e] [-c] [-u] [-f]
                 [-x FASTML_EXECUTE]
 
-  SNPPar: Parallel/homoplasic SNP Finder V0.3dev
+    SNPPar: Parallel/homoplasic SNP Finder V0.3dev
 
-  optional arguments:
+    optional arguments:
     -h, --help            show this help message and exit
     -s SNPTABLE, --snptable SNPTABLE
                           SNP table (i.e. RedDog output)
