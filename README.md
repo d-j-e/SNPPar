@@ -104,7 +104,7 @@ Note: If any gene is split in the reference (including across the origin of the 
                           Genbank reference (required)
     -M MUTATION_EVENTS, --mutation_events MUTATION_EVENTS
                           Mutation events file (previous results)
-   -d DIRECTORY, --directory DIRECTORY
+    -d DIRECTORY, --directory DIRECTORY
                           Output directory
     -p PREFIX, --prefix PREFIX
                           Prefix to add to output files
