@@ -9,7 +9,7 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V0.2dev
+Current Version: V0.3dev
 
 # Home:
 
@@ -146,6 +146,14 @@ Note: If any gene is split in the reference (including across the origin of the 
 
     snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a
 
+# SNPPar can also use previous output (mutation events)
+    A prefix must be added to the run - SNPPar will overwrite results if not careful.
+    Note: SNPPar does not work with the tree it produces, use the original tree
+
+## Example to call the three types of homoplasic SNPs post-run
+
+    snppar -M <all_mutation_events.tsv> -p Run_1_ -t <tree.tre> -P -C -R
+
 # Outputs (default)
 
 * Sequence calls at the internal nodes (MFASTA)
@@ -202,12 +210,13 @@ Then to run SNPPar:
 
     snppar –s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d testing
 
+
 ## Example tree from test_data (using FigTree)
 <p align="left"> 
 <img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="800">
 </p>
 
 # Important Note
-SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are ***extremely unreliable*** - Indeed the tree has no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
+SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are arbituarly assigned - As such, the tree has no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
 
-When a homoplasic event does occur at the root node and is removed, if there is only one other mutation event at the same SNP position, that mutation event is not removed from the tree. Keep this in mind when interpreting the tree output.
+When a homoplasic event does occur at the root node and is removed, if there is only one other mutation event at the same SNP position, that mutation event is *not* removed from the tree. Keep this in mind when interpreting the tree output.
