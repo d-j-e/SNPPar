@@ -150,8 +150,7 @@ Note: If any gene is split in the reference (including across the origin of the 
     snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a
 
 # SNPPar can also use previous output (mutation events)
-    A prefix must be added to the run - SNPPar will overwrite results if not careful.
-    Note: SNPPar does not work with the tree it produces, use the original tree
+A prefix must be added to the run - SNPPar will overwrite results if not careful. Note: SNPPar does not work with the tree it produces, use the original tree
 
 ## Example to call the three types of homoplasic SNPs post-run
 
