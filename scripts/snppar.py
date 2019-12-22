@@ -15,7 +15,7 @@
 snppar -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 22/11/2019
+# Last modified - 23/12/2019
 # Recent Changes:	changed default reporting to homoplasic, not parallel
 #					change of some input commands as a result
 #					added user command to log output
@@ -23,6 +23,7 @@ snppar -s snps.csv -g genbank.gb -t tree.tre
 #					fixed reporting of revertant SNPs
 #					fix for fixed reporting of rSNPs (version change)
 #					added parsing for previous results
+#					fix for fastml_execute
 # To add:	missingness report - highest SNP, isolate, overall missingness
 #			mapping using tree and snp table only (i.e. no reference)
 #
@@ -42,7 +43,7 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.3dev'
+version = 'V0.3.1dev'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -803,7 +804,7 @@ def getSnpsOnBranch(parent, child, newtable, strains, node_snptable, nodes, snps
 				snps_mapped.append([int(snptable[snps_to_map[i]][0]), parent,child, parent_seq[i].upper(), child_seq[i].upper()])
 	return snps_mapped
 
-def mapSNPs(snps_to_map, snptable, strains, tree_name, prefix,log):
+def mapSNPs(fastml_execute, snps_to_map, snptable, strains, tree_name, prefix,log):
 	aln_file_name = prefix + "snps_to_map.mfasta"
 	newtable = []
 	for i in snps_to_map:
@@ -2159,7 +2160,7 @@ def main():
 		parallel_output = assignSNPs(snps_to_map, snptable, slice_size, feature_slice, geneannot, len(sequence), [], "SNPs to map",log)
 		# map paraphyletic biallelic [and other (tri- and quadallelic) snps] to tree to get ancestral genotypes
 		if arguments.fastml:
-			snps_mapped, tree_with_nodes, mapped_node_sequences, node_names_mapped = mapSNPs(snps_to_map, snptable, strains, arguments.tree, directory,log)
+			snps_mapped, tree_with_nodes, mapped_node_sequences, node_names_mapped = mapSNPs(arguments.fastml_execute, snps_to_map, snptable, strains, arguments.tree, directory,log)
 		else:
 			snps_mapped, mapped_node_sequences, node_names_mapped = mapSNPsTT(snps_to_map,snptable,strains,arguments.tree,directory,tree,prefix,log)
 		# process mapped SNPs to get mutation events
