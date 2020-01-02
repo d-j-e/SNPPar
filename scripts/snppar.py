@@ -15,15 +15,14 @@
 snppar -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 23/12/2019
+# Last modified - 2/1/2020
 # Recent Changes:	changed default reporting to homoplasic, not parallel
 #					change of some input commands as a result
 #					added user command to log output
-#					fixes on testing
 #					fixed reporting of revertant SNPs
-#					fix for fixed reporting of rSNPs (version change)
 #					added parsing for previous results
 #					fix for fastml_execute
+#					simplified sorting for TreeTime
 # To add:	missingness report - highest SNP, isolate, overall missingness
 #			mapping using tree and snp table only (i.e. no reference)
 #
@@ -43,7 +42,7 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.3.1dev'
+version = 'V0.4dev'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -729,6 +728,197 @@ def getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,node
 	message = "\nBiallelic SNPs (>1 one isolate): " + str(biallelic)
 	message += "\nBiallelic SNP patterns tested: " + str(len(snp_pattern))
 	message += "\nParaphyletic SNPs found: " + str(biallelic_homoplasic)
+	message += "\nTriallelic SNPs found: " + str(triallelic)
+	message += "\nQuadallelic SNPs found: " + str(quadallelic)
+	snps_to_map = snps_to_map + other_snps
+	snps_to_map.sort()
+	message += "\n\nTotal SNPs for mapping: " + str(len(snps_to_map))
+	logPrint(log, message, 'INFO')
+	return snps_to_map, monophyletic_snps, monophyletic_node_sequences
+
+def getSNPsToTestTT(total_snp_count,total_isolate_count,snptable,strains,tree,node_names,log):
+	message = "\nParsing SNPs to find bi-, tri- and quadallelic SNPs...\n"
+	logPrint(log, message, 'INFO')
+	snps_to_map = []
+	monophyletic_snps = []
+	monophyletic_node_sequences = []
+	other_snps = []
+	biallelic = 0
+	triallelic = 0
+	quadallelic = 0
+	for i in range(total_snp_count):
+		call_counts = countCalls(i,total_isolate_count,snptable)
+		if ((call_counts[0] + call_counts[1] + call_counts[4]) == total_isolate_count):
+			if (call_counts[0] > 1 and call_counts[1] > 1):
+				biallelic += 1
+				snps_to_map.append(i)
+			else:
+				if call_counts[0] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "a", "c", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "C", "A", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "C"
+				elif call_counts[1] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "c", "a", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "A", "C", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "A"
+		elif ((call_counts[0] + call_counts[2] + call_counts[4]) == total_isolate_count):
+			if (call_counts[0] > 1 and call_counts[2] > 1):
+				biallelic += 1
+				snps_to_map.append(i)
+			else:
+				if call_counts[0] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "a", "g", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "G", "A", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "G"
+				elif call_counts[2] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "g", "a", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []	
+					monophyletic_snps.append([i, "A", "G", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "A"
+		elif ((call_counts[0] + call_counts[3] + call_counts[4]) == total_isolate_count):
+			if (call_counts[0] > 1 and call_counts[3] > 1):
+				biallelic += 1
+				snps_to_map.append(i)
+			else:
+				if call_counts[0] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "a", "t", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "T", "A", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "T"
+				elif call_counts[3] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "t", "a", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "A", "T", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "A"
+		elif ((call_counts[1] + call_counts[2] + call_counts[4]) == total_isolate_count):
+			if (call_counts[1] > 1 and call_counts[2] > 1):
+				biallelic += 1
+				snps_to_map.append(i)
+			else:
+				if call_counts[1] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "c", "g", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "G", "C", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "G"
+				elif call_counts[2] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "g", "c", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "C", "G", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "C"
+		elif ((call_counts[1] + call_counts[3] + call_counts[4]) == total_isolate_count):
+			if (call_counts[1] > 1 and call_counts[3] > 1):
+				biallelic += 1
+				snps_to_map.append(i)
+			else:
+				if call_counts[1] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "c", "t", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "T", "C", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "T"
+				elif call_counts[3] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "t", "c", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "C", "T", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "C"
+		elif ((call_counts[2] + call_counts[3] + call_counts[4]) == total_isolate_count):
+			if (call_counts[2] > 1 and call_counts[3] > 1):
+				biallelic += 1
+				snps_to_map.append(i)
+			else:
+				if call_counts[2] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "g", "t", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "T", "G", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "T"
+				elif call_counts[3] == 1:
+					snp_set, alt_set, na_set = getStrainsWithCalls(i, total_isolate_count, snptable, "t", "g", strains)
+					if len(na_set) > 1:
+						test_tree, na_nodes = getNANodes(tree,na_set,node_names)
+					else:
+						na_nodes = []
+					monophyletic_snps.append([i, "G", "T", snp_set])
+					monophyletic_node_sequences.append([snptable[i][0],""])
+					for j in range(len(node_names)):
+						monophyletic_node_sequences[-1][1] += "G"
+		elif ((call_counts[0] + call_counts[1] + call_counts[2] + call_counts[4]) == total_isolate_count):
+			if (call_counts[0] > 0 and call_counts[1] > 0 and call_counts[2] > 0):
+				other_snps.append(i)
+				triallelic += 1
+		elif ((call_counts[0] + call_counts[1] + call_counts[3] + call_counts[4]) == total_isolate_count):
+			if (call_counts[0] > 0 and call_counts[1] > 0 and call_counts[3] > 0):
+				other_snps.append(i)
+				triallelic += 1
+		elif ((call_counts[0] + call_counts[2] + call_counts[3] + call_counts[4]) == total_isolate_count):
+			if (call_counts[0] > 0 and call_counts[2] > 0 and call_counts[3] > 0):
+				other_snps.append(i)
+				triallelic += 1
+		elif ((call_counts[1] + call_counts[2] + call_counts[3] + call_counts[4]) == total_isolate_count):
+			if (call_counts[1] > 0 and call_counts[2] > 0 and call_counts[3] > 0):
+				other_snps.append(i)
+				triallelic += 1
+		elif ((call_counts[0] + call_counts[1] + call_counts[2] + call_counts[3] + call_counts[4]) == total_isolate_count):
+			if (call_counts[0] > 0 and call_counts[1] > 0 and call_counts[2] > 0 and call_counts[3] > 0):
+				other_snps.append(i)
+				quadallelic += 1
+	message = "\nBiallelic SNPs with >1 isolate found: " + str(biallelic)
 	message += "\nTriallelic SNPs found: " + str(triallelic)
 	message += "\nQuadallelic SNPs found: " + str(quadallelic)
 	snps_to_map = snps_to_map + other_snps
@@ -2154,7 +2344,10 @@ def main():
 			logPrint(log, message, 'INFO')
 		# find biallelic SNPs that occur in more than one isolate
 		# and test whether their SNP pattern is paraphyletic
-		snps_to_map, monophyletic_snps, monophyletic_node_sequences = getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,tree_nodes,arguments.counting,log)
+		if arguments.fastml:
+			snps_to_map, monophyletic_snps, monophyletic_node_sequences = getSNPsToTest(total_snp_count,total_isolate_count,snptable,strains,tree,tree_nodes,arguments.counting,log)
+		else:
+			snps_to_map, monophyletic_snps, monophyletic_node_sequences = getSNPsToTestTT(total_snp_count,total_isolate_count,snptable,strains,tree,tree_nodes,log)
 		# check if snps to be mapped are intra- or intergenic
 		monophyletic_output = getMonophyleticSNPs(monophyletic_snps, snptable, slice_size, feature_slice, geneannot, len(sequence), [], "monophyletic SNPs",log)
 		parallel_output = assignSNPs(snps_to_map, snptable, slice_size, feature_slice, geneannot, len(sequence), [], "SNPs to map",log)
