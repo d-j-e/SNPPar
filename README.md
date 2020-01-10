@@ -9,7 +9,7 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V0.3.1dev
+Current Version: V0.4dev
 
 # Home:
 
@@ -84,49 +84,49 @@ Note: If any gene is split in the reference (including across the origin of the 
 # Running SNPPar
 
     snppar -h
-    usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST] [-t TREE]
-               [-g GENBANK] [-M MUTATION_EVENTS] [-d DIRECTORY] [-p PREFIX]
-               [-P] [-S] [-C] [-R] [-A] [-a] [-n] [-e] [-c] [-u] [-f]
-                [-x FASTML_EXECUTE]
-
-    SNPPar: Parallel/homoplasic SNP Finder V0.3dev
-
+    usage: snppar [-h] [-s SNPTABLE] [-m MFASTA] [-l SNP_POSITION_LIST]
+                  [-t TREE] [-g GENBANK] [-E SORTING] [-M MUTATION_EVENTS]
+                  [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-A] [-a] [-n]
+                  [-e] [-u] [-f] [-x FASTML_EXECUTE]
+        SNPPar: Parallel/homoplasic SNP Finder V0.4dev
     optional arguments:
     -h, --help            show this help message and exit
     -s SNPTABLE, --snptable SNPTABLE
-                          SNP table (i.e. RedDog output)
+                        SNP table (i.e. RedDog output)
     -m MFASTA, --mfasta MFASTA
-                          SNPs in MFASTA format
+                        SNPs in MFASTA format
     -l SNP_POSITION_LIST, --snp_position_list SNP_POSITION_LIST
-                          SNP position list (required for MFASTA input)
+                        SNP position list (required for MFASTA input)
     -t TREE, --tree TREE  Phylogenetic tree (required)
     -g GENBANK, --genbank GENBANK
-                          Genbank reference (required)
+                        Genbank reference (required)
+    -E SORTING, --sorting SORTING
+                        Type of sorting (options: "complex" - slower, less
+                        memory; "simple" - faster, more memory; default -
+                        intermediate)
     -M MUTATION_EVENTS, --mutation_events MUTATION_EVENTS
-                          Mutation events file (previous results)
+                        Mutation events file (previous results)
     -d DIRECTORY, --directory DIRECTORY
-                          Output directory
+                        Output directory
     -p PREFIX, --prefix PREFIX
-                          Prefix to add to output files
+                        Prefix to add to output files
     -P, --parallel        Flag for reporting of parallel calls
     -S, --strict          Flag to output strict parallel calls (for testing,
-                          sets '-P' to True")
+                        sets '-P' to True")
     -C, --convergent      Flag for reporting of convergent calls
     -R, --revertant       Flag for reporting of revertant calls
     -A, --all_homoplasic_types
-                          Flag for reporting of all three homoplasic types
+                        Flag for reporting of all three homoplasic types
     -a, --no_all_calls    Flag to turn off reporting of all events at each call
-                          position (homoplasic reporting)
+                        position (homoplasic reporting)
     -n, --no_homoplasic   Flag to turn off homoplasic calls output
     -e, --no_all_events   Flag to turn off reporting of all mutation events
-    -c, --counting        Flag to display counts during SNP testing - warning:
-                          slow with large data sets
     -u, --no_clean_up     Flag to turn off deletion of intermediate files on
-                          completion of run
+                        completion of run
     -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
     -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
-                          Command to execute fastML (default command: "fastml"
-                          i.e. on PATH)
+                        Command to execute fastML (default command: "fastml"
+                        i.e. on PATH)
 
 # Example Commands
 ## To get homoplasic SNPs including all events reported for each (i.e. default settings):
@@ -149,8 +149,23 @@ Note: If any gene is split in the reference (including across the origin of the 
 
     snppar -s <alleles.csv> -t <tree.tre> -g <genbank.gbk> -a
 
+# SNPPar sorting
+Three versions of the SNP sorting are available when using TreeTime for ASR  
+                          Filtered out from ASR  
+  complex                 singletons and monophyletic SNPs 
+                          (tested against tree)  
+  intermediate (default)  same as complex except SNPs with 
+                          missing calls sent to ASR (not singletons)
+  simple                  singletons only
+  
+Complex sorting is the most memory efficient of the three, with simple being about twice as costly (estimate!); intermediate sits somewhere in between (though closer to complex).  
+  
+Run time is more dependant on missing calls; complex and intermediate sorting are quicker than simple sorting when there are no missing calls. When missing calls are present, complex sorting can be much slower than either simple or intermediate sorting. Intermediate sorting can be faster than simple... (still testing atm)  
+  
+Complex sorting may be useful when memory is a problem; simple sorting can be used to if you would prefer all the internal SNPs (i.e. non-singletons) to be mapped using ASR.  
+  
 # SNPPar can also use previous output (mutation events)
-A prefix must be added to the run - SNPPar will overwrite results if not careful. Note: SNPPar does not work with the tree it produces, use the original tree
+A prefix must be added to the run - SNPPar will overwrite results if not careful. Note: SNPPar does not work with the trees it produces, use the original tree
 
 ## Example to call the three types of homoplasic SNPs post-run
 
@@ -194,24 +209,24 @@ A prefix must be added to the run - SNPPar will overwrite results if not careful
   * Down_Gene: Nearest gene downstream (3') of mutation event
   * Down_Gene_Strand: Strand on which downstream gene occurs (same as Strand)
   * Down_Gene_Distance: Base pair distance from mutation event to downstream gene
-
-# Logging
-SNPPar now includes logging of all (expected) events to a log file. There are three levels of messages; 'INFO' (Information), 'WARNING', and 'CRITICAL'. All three are *always* reported in the log file.
-* 'INFO' are regular runtime messages.
-* 'WARNING' are for problems such as invariant SNP calls or split genes in the GenBank reference which do not affect the running of SNPPar. However, these are excluded in either case, which may affect the user experience(!)
-* 'CRITICAL' are for problems which result in the immediate termination of the program. These need to be resolved before SNPPar will run successfully.
-
-# Test Data
-In the folder 'test_data' is a SNP table and phylogenetic tree from the simulated data set. These, along with the genbank reference 'NC_00962_3_1.gbk', can be used to test your installation. The expected outputs are included in the subfolder 'test_data/test_outputs'.
-
-## Command to run test data
-Navigate from the SNPPar github folder to test_data:
-
+  
+# Logging  
+SNPPar now includes logging of all (expected) events to a log file. There are three levels of messages; 'INFO' (Information), 'WARNING', and 'CRITICAL'. All three are *always* reported in the log file.  
+* 'INFO' are regular runtime messages.  
+* 'WARNING' are for problems such as invariant SNP calls or split genes in the GenBank reference which do not affect the running of SNPPar. However, these are excluded in either case, which may affect the user experience(!)  
+* 'CRITICAL' are for problems which result in the immediate termination of the program. These need to be resolved before SNPPar will run successfully.  
+  
+# Test Data  
+In the folder 'test_data' is a SNP table and phylogenetic tree from the simulated data set. These, along with the genbank reference 'NC_00962_3_1.gbk', can be used to test your installation. The expected outputs are included in the subfolder 'test_data/test_outputs'.  
+  
+## Command to run test data  
+Navigate from the SNPPar github folder to test_data:  
+  
     cd test_data
+  
 Then to run SNPPar:
-
+  
     snppar –s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d testing
-
 
 ## Example tree from test_data (using FigTree)
 <p align="left"> 
@@ -219,6 +234,6 @@ Then to run SNPPar:
 </p>
 
 # Important Note
-SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are arbituarly assigned - As such, the tree has no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs is estimated using the ratio of the distance to the child nodes of 'N1'.
+SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are arbituarly assigned - As such, the output trees have no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs on each branch is estimated using the ratio of the distance to the child nodes of 'N1'.
 
-When a homoplasic event does occur at the root node and is removed, if there is only one other mutation event at the same SNP position, that mutation event is *not* removed from the tree. Keep this in mind when interpreting the tree output.
+When a homoplasic event does occur at the root node and is removed, if there is only one other mutation event at the same SNP position, that mutation event is *not* removed from the tree. Keep this in mind when interpreting the tree output.  
