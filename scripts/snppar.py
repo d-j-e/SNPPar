@@ -23,8 +23,8 @@ snppar -s snps.csv -g genbank.gb -t tree.tre
 #					added parsing for previous results
 #					fix for fastml_execute
 #					simplified and intermediate and complex sorting for TreeTime
-# To add:	missingness report - highest SNP, isolate, overall missingness
-#			mapping using tree and snp table only (i.e. no reference)
+#					further fixing (and testing) of fastml_execute
+# To add:	mapping using tree and snp table only (i.e. no reference)
 #
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
@@ -42,7 +42,7 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.4dev'
+version = 'V0.4.1dev'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -86,9 +86,9 @@ def executeCommand(command, log):
 		message = 'Failed to run command: ' + command
 		logPrint(log, message, "CRITICAL")
 		message = 'stdout: ' + result.stdout
-		log(log, message, "CRITICAL")
+		logPrint(log, message, "CRITICAL")
 		message = 'stderr: ' + result.stderr
-		log(log, message, "CRITICAL")
+		logPrint(log, message, "CRITICAL")
 		sys.exit(1)
 	else:
 		message = 'stdout: ' + result.stdout
