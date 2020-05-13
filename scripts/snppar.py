@@ -15,7 +15,7 @@
 snppar -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 2/1/2020
+# Last modified - 11/5/2020
 # Recent Changes:	changed default reporting to homoplasic, not parallel
 #					change of some input commands as a result
 #					added user command to log output
@@ -24,6 +24,7 @@ snppar -s snps.csv -g genbank.gb -t tree.tre
 #					fix for fastml_execute
 #					simplified and intermediate and complex sorting for TreeTime
 #					further fixing (and testing) of fastml_execute
+#					removed 'cpickle' option for tree.copy(), 'deepcopy' option insted
 # To add:	mapping using tree and snp table only (i.e. no reference)
 #
 
@@ -42,7 +43,7 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.4.1dev'
+version = 'V0.4.2dev'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -444,7 +445,7 @@ def addToSNPPatterns(snp,snp_pattern,snp_set,alt_set,na_set,tree,snps_to_map,mon
 
 def getNANodes(tree, na_set, node_names):
 	removed_nodes = []
-	test_tree = tree.copy()
+	test_tree = tree.copy("newick")
 	if na_set:
 		for isolate in na_set:
 			if test_tree.search_nodes(name=isolate):
