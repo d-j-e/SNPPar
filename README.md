@@ -9,7 +9,7 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V0.4.1dev
+Current Version: V0.4.2dev
 
 # Home:
 
@@ -88,7 +88,7 @@ Note: If any gene is split in the reference (including across the origin of the 
                   [-t TREE] [-g GENBANK] [-E SORTING] [-M MUTATION_EVENTS]
                   [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-A] [-a] [-n]
                   [-e] [-u] [-f] [-x FASTML_EXECUTE]
-        SNPPar: Parallel/homoplasic SNP Finder V0.4.1dev
+        SNPPar: Parallel/homoplasic SNP Finder V0.4.2dev
     optional arguments:
     -h, --help            show this help message and exit
     -s SNPTABLE, --snptable SNPTABLE
@@ -151,16 +151,20 @@ Note: If any gene is split in the reference (including across the origin of the 
 
 # SNPPar sorting
 Three versions of the SNP sorting are available when using TreeTime for ASR  
-                          Filtered out from ASR  
-  complex                 singletons and monophyletic SNPs 
-                          (tested against tree)  
-  intermediate (default)  same as complex except SNPs with 
-                          missing calls sent to ASR (not singletons)
-  simple                  singletons only
-  
+
+                            Filtered out before ASR  
+     
+    complex                 singletons and monophyletic SNPs 
+                            (tested against tree)  
+     
+    intermediate (default)  same as complex except non-singleton SNPs
+                            with missing calls sent to ASR ()
+     
+    simple                  singletons only
+
 Complex sorting is the most memory efficient of the three, with simple being about twice as costly (estimate!); intermediate sits somewhere in between (though closer to complex).  
   
-Run time is more dependant on missing calls; complex and intermediate sorting are quicker than simple sorting when there are no missing calls. When missing calls are present, complex sorting can be much slower than either simple or intermediate sorting. Intermediate sorting can be faster than simple... (still testing atm)  
+Run time is more dependant on missing calls; complex and intermediate sorting are quicker than simple sorting when there are no missing calls. When missing calls are present, complex sorting can be much slower than either simple or intermediate sorting. Intermediate sorting is typically faster than simple.  
   
 Complex sorting may be useful when memory is a problem; simple sorting can be used to if you would prefer all the internal SNPs (i.e. non-singletons) to be mapped using ASR.  
   
@@ -234,6 +238,6 @@ Then to run SNPPar:
 </p>
 
 # Important Note
-SNPPar is very accurate (evidence in SNPPar_test very soon!), BUT calls where the ancestor is the root node ('N1') are arbituarly assigned - As such, the output trees have no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs on each branch is estimated using the ratio of the distance to the child nodes of 'N1'.
+SNPPar is very accurate, BUT calls where the ancestor is the root node ('N1') are arbituarly assigned. As such, the output trees have no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs on each branch is estimated using the ratio of the distance to the child nodes of 'N1'.
 
 When a homoplasic event does occur at the root node and is removed, if there is only one other mutation event at the same SNP position, that mutation event is *not* removed from the tree. Keep this in mind when interpreting the tree output.  
