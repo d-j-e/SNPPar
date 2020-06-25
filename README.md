@@ -9,20 +9,20 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V0.4.2dev
+Current Version: V1.0
 
 # Home:
 
-https://github.com/d-j-e/SNPPar
+[SNPPar](https://github.com/d-j-e/SNPPar)
 
 Please use the SNPPar 'Issues' page on GitHub if you have any problems or find any errors in the output. 
 
-Note that this code is definitely still in development.
-
-Coming Very Soon: SNPPar_test - a git with all the data, code, instructions and outputs for testing SNPPar with simulated data as found in the citation below.
+Also available: [SNPPar_test](https://github.com/d-j-e/SNPPar_test) - a git with all the data, code, instructions and outputs for testing SNPPar with simulated and empirical data as found in the citation below.
 
 # Citation 
-coming soon...
+Edwards DJ, Duchêne S, Pope B, and Holt KE. "SNPPar: identifying convergent evolution and other homoplasies from microbial whole-genome alignments" (bioarchive link)
+
+Submitted to _Microbial Genomics_
 
 # License:
 
@@ -238,6 +238,6 @@ Then to run SNPPar:
 </p>
 
 # Important Note
-SNPPar is very accurate, BUT calls where the ancestor is the root node ('N1') are arbituarly assigned. As such, the output trees have no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs on each branch is estimated using the ratio of the distance to the child nodes of 'N1'.
+SNPPar is very accurate, BUT calls where the ancestor is the root node ('N1') are arbituarly assigned (as with any ASR approach). As such, the output trees have no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs on each branch is estimated using the ratio of the distance to the child nodes of 'N1'.
 
 When a homoplasic event does occur at the root node and is removed, if there is only one other mutation event at the same SNP position, that mutation event is *not* removed from the tree. Keep this in mind when interpreting the tree output.  
