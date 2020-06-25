@@ -61,14 +61,14 @@ SNP table
 
 As MFASTA
 
-    >A
+    >IsolateA
     ATTT
-    >B
+    >IsolateB
     ACT-
-    >C
+    >IsolateC
     CTGC
 
-And SNP Position file
+And a SNP Position file
 
     10
     21
@@ -232,7 +232,7 @@ Then to run SNPPar:
   
     snppar –s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d testing
 
-## Example tree from test_data (using FigTree)
+## Example tree from test_data (using [FigTree](http://tree.bio.ed.ac.uk/software/figtree/))
 <p align="left"> 
 <img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="800">
 </p>
