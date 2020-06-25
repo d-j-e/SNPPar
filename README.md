@@ -88,7 +88,7 @@ Note: If any gene is split in the reference (including across the origin of the 
                   [-t TREE] [-g GENBANK] [-E SORTING] [-M MUTATION_EVENTS]
                   [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-A] [-a] [-n]
                   [-e] [-u] [-f] [-x FASTML_EXECUTE]
-        SNPPar: Parallel/homoplasic SNP Finder V0.4.2dev
+        SNPPar: Parallel/homoplasic SNP Finder V1.0
     optional arguments:
     -h, --help            show this help message and exit
     -s SNPTABLE, --snptable SNPTABLE
