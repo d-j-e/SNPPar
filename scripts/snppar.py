@@ -4,8 +4,8 @@
 # ****Function Description***
 # SNPPar: Parallel/homoplasic SNP finder
 #
-# Author(s) 
-#			D. J. Edwards (David.Edwards@monash.edu) 
+# Authors
+#			D. J. Edwards (David.Edwards@monash.edu)
 #			K. E. Holt
 #			B. J. Pope
 #			S. Duchene
@@ -15,7 +15,7 @@
 snppar -s snps.csv -g genbank.gb -t tree.tre
 '''
 #
-# Last modified - 11/5/2020
+# Last modified - 25/6/2020
 # Recent Changes:	changed default reporting to homoplasic, not parallel
 #					change of some input commands as a result
 #					added user command to log output
@@ -24,9 +24,9 @@ snppar -s snps.csv -g genbank.gb -t tree.tre
 #					fix for fastml_execute
 #					simplified and intermediate and complex sorting for TreeTime
 #					further fixing (and testing) of fastml_execute
-#					removed 'cpickle' option for tree.copy(), 'deepcopy' option insted
+#					removed 'cpickle' option for tree.copy(), 'deepcopy' option instead
+#					pushed to version 1.0 for release
 # To add:	mapping using tree and snp table only (i.e. no reference)
-#
 
 import os,sys,subprocess,string,re,random,collections,operator,argparse
 from operator import itemgetter
@@ -43,7 +43,7 @@ from ete3 import Tree
 from datetime import datetime
 
 # Constants declaration
-version = 'V0.4.2dev'
+version = 'V1.0'
 genefeatures = 'CDS'
 excludefeatures = 'gene,misc_feature,repeat_region,mobile_element'
 nt = ['A','C','G','T']
@@ -125,7 +125,7 @@ def logPrint(log, message, message_type):
 	now = datetime.now()
 	timestamp = datetime.timestamp(now)
 	dt_object = datetime.fromtimestamp(timestamp)
-	time = dt_object.strftime("%Y-%m-%d_%H:%M:%S.%f")	
+	time = dt_object.strftime("%Y-%m-%d_%H:%M:%S.%f")
 	message = time + ": " + message_type + " : " + message
 	if not message.endswith('\n'):
 		message += '\n'
@@ -138,7 +138,7 @@ def log(log, message, message_type):
 	now = datetime.now()
 	timestamp = datetime.timestamp(now)
 	dt_object = datetime.fromtimestamp(timestamp)
-	time = dt_object.strftime("%Y-%m-%d_%H:%M:%S.%f")	
+	time = dt_object.strftime("%Y-%m-%d_%H:%M:%S.%f")
 	message = time + ": " + message_type + " : " + message
 	if not message.endswith('\n'):
 		message += '\n'

@@ -9,20 +9,20 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V0.4.2dev
+Current Version: V1.0
 
 # Home:
 
-https://github.com/d-j-e/SNPPar
+[SNPPar](https://github.com/d-j-e/SNPPar)
 
 Please use the SNPPar 'Issues' page on GitHub if you have any problems or find any errors in the output. 
 
-Note that this code is definitely still in development.
-
-Coming Very Soon: SNPPar_test - a git with all the data, code, instructions and outputs for testing SNPPar with simulated data as found in the citation below.
+Also available: [SNPPar_test](https://github.com/d-j-e/SNPPar_test) - a git with all the data, code, instructions and outputs for testing SNPPar with simulated and empirical data as found in the citation below.
 
 # Citation 
-coming soon...
+Edwards DJ, Duchêne S, Pope B, and Holt KE. "SNPPar: identifying convergent evolution and other homoplasies from microbial whole-genome alignments" _Biorxiv_ 2020 [doi:10.1101/2020.07.08.194480v1](https://www.biorxiv.org/content/10.1101/2020.07.08.194480v1)
+
+Submitted to _Microbial Genomics_
 
 # License:
 
@@ -61,14 +61,14 @@ SNP table
 
 As MFASTA
 
-    >A
+    >IsolateA
     ATTT
-    >B
+    >IsolateB
     ACT-
-    >C
+    >IsolateC
     CTGC
 
-And SNP Position file
+And a SNP Position file
 
     10
     21
@@ -88,7 +88,7 @@ Note: If any gene is split in the reference (including across the origin of the 
                   [-t TREE] [-g GENBANK] [-E SORTING] [-M MUTATION_EVENTS]
                   [-d DIRECTORY] [-p PREFIX] [-P] [-S] [-C] [-R] [-A] [-a] [-n]
                   [-e] [-u] [-f] [-x FASTML_EXECUTE]
-        SNPPar: Parallel/homoplasic SNP Finder V0.4.2dev
+        SNPPar: Parallel/homoplasic SNP Finder V1.0
     optional arguments:
     -h, --help            show this help message and exit
     -s SNPTABLE, --snptable SNPTABLE
@@ -232,12 +232,12 @@ Then to run SNPPar:
   
     snppar –s MTB_Global_L2_alleles.csv -t MTB_Global_L2.tre -g NC_00962_3_1.gbk -d testing
 
-## Example tree from test_data (using FigTree)
+## Example tree from test_data (using [FigTree](http://tree.bio.ed.ac.uk/software/figtree/))
 <p align="left"> 
 <img src="https://github.com/d-j-e/SNPPar/blob/master/example_node_labelled_nexus.tre.jpg" width="800">
 </p>
 
 # Important Note
-SNPPar is very accurate, BUT calls where the ancestor is the root node ('N1') are arbituarly assigned. As such, the output trees have no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs on each branch is estimated using the ratio of the distance to the child nodes of 'N1'.
+SNPPar is very accurate, BUT calls where the ancestor is the root node ('N1') are arbituarly assigned (as with any ASR approach). As such, the output trees have no homoplasic events (parallel, convergent, or revertant) mapped to root node, though the total number of SNPs on each branch is estimated using the ratio of the distance to the child nodes of 'N1'.
 
 When a homoplasic event does occur at the root node and is removed, if there is only one other mutation event at the same SNP position, that mutation event is *not* removed from the tree. Keep this in mind when interpreting the tree output.  
