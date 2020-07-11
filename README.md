@@ -20,7 +20,7 @@ Please use the SNPPar 'Issues' page on GitHub if you have any problems or find a
 Also available: [SNPPar_test](https://github.com/d-j-e/SNPPar_test) - a git with all the data, code, instructions and outputs for testing SNPPar with simulated and empirical data as found in the citation below.
 
 # Citation 
-Edwards DJ, Duchêne S, Pope B, and Holt KE. "SNPPar: identifying convergent evolution and other homoplasies from microbial whole-genome alignments" (bioarchive link)
+Edwards DJ, Duchêne S, Pope B, and Holt KE. "SNPPar: identifying convergent evolution and other homoplasies from microbial whole-genome alignments" _Biorxiv_ 2020 [doi:10.1101/2020.07.08.194480v1](https://www.biorxiv.org/content/10.1101/2020.07.08.194480v1)
 
 Submitted to _Microbial Genomics_
 
