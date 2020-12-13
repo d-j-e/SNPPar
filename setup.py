@@ -22,7 +22,7 @@ setup(
                       'By default, reports both the homoplasic events and '
                       'all mutation events. Also maps the SNPs to the tree.'),
     install_requires=[
-        'biopython>=1.66',
+        'biopython>=1.66,<=1.76',
         'ete3',
         'phylo-treetime'
     ],
