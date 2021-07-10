@@ -49,7 +49,7 @@ This will also install the requirements above (not FastML).
 
 The input tree needs to be bifurcating, rooted (midpoint is fine, but an outgroup is much better...), and in Newick format. Also, the branch lengths in the tree should be substitutions/site not, for example, no. of SNPs on each branch. (Note: you can divide the number of SNPs by the total no. of sites tested to get substitutions/site)
 
-SNPPar takes either a SNP table (a small example is provided below) or a MFASTA file with a second file with the SNP positions (in same order)
+SNPPar takes either a SNP table (a small example is provided below) or a MFASTA file with a second file with the SNP positions (in same order). Suitable reference-based SNP calls can be achieved using a variety of tools such as [Parsnp](https://github.com/marbl/parsnp) (working from assemblies) or [snippy](https://github.com/tseemann/snippy) (working from reads).
 
 SNP table
 
