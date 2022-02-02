@@ -1241,7 +1241,9 @@ def readSeqsTT(output_seqs,strains,snps_to_map,snptable):
 	while i < len(sequences):
 		test_name = sequences[i][1:-1]
 		if not(test_name in strains):
-			test_name = 'N' + str(int(test_name[5:])+1)
+			#test_name = 'N' + str(int(test_name[5:])+1) # KH fix - can take node names at face value except root
+			if test_name == "NODE_0000000": # KH
+				test_name = "N1"  # KH
 			if not(test_name in nodes):
 				nodes.append(test_name)
 			i += 1
@@ -2519,8 +2521,11 @@ def readMappedSNPs(tt_nexus_tree,the_tree,snps_to_map,snptable):
 			parts[0] = parts[0].split(':')[0]
 			while parts[0].startswith('('):
 				parts[0] = parts[0].lstrip('(')
-			if parts[0].startswith('NODE_'):
-				parts[0] = 'N' + str(int(parts[0][5:])+1)
+			# KH fix - no need to modify node names, except for root, change from NODE_0000000 to N1
+			#if parts[0].startswith('NODE_'):
+			#	parts[0] = 'N' + str(int(parts[0][5:])+1)
+			if parts[0] == "NODE_0000000": # KH
+				parts[0] = 'N1' # fix name of root node which was assigned by treetime
 			derived_node = the_tree.search_nodes(name=parts[0])[0]
 			derived = derived_node.name
 			ancestor_node = derived_node.up
@@ -2621,6 +2626,8 @@ def main():
 		slice_size, feature_slice, feature_list = makeGeneIndex(geneannot,len(sequence),log)
 	# read in tree
 	tree, tree_strains, tree_nodes = readTree(arguments.tree,log)
+	tree_file_with_nodes = prefix + "input_tree" + "_nodeNames.nwk" # KH fix - write out the input tree with our node names added
+	tree.write(format=7, outfile=tree_file_with_nodes) # KH fix
 	if not arguments.mutation_events:
 		#check same isolates are found tree and alignment
 		if not sameStrains(strains,tree_strains):
@@ -2645,7 +2652,9 @@ def main():
 		if arguments.fastml:
 			snps_mapped, tree_with_nodes, mapped_node_sequences, node_names_mapped = mapSNPs(arguments.fastml_execute, snps_to_map, snptable, strains, arguments.tree, directory,log)
 		else: #default sorting - intermediate (SNPs with missing calls sent to mapping)
-			snps_mapped, mapped_node_sequences, node_names_mapped = mapSNPsTT(snps_to_map,snptable,strains,arguments.tree,directory,tree,prefix,log)
+			#snps_mapped, mapped_node_sequences, node_names_mapped = mapSNPsTT(snps_to_map,snptable,strains,arguments.tree,directory,tree,prefix,log)
+			# KH fix - pass newick tree with labelled nodes to treetime
+			snps_mapped, mapped_node_sequences, node_names_mapped = mapSNPsTT(snps_to_map,snptable,strains,tree_file_with_nodes,directory,tree,prefix,log)
 		# process mapped SNPs to get mutation events
 		parallel_mapped = combineParallelResults(parallel_output,snps_mapped,log)
 		monophyletic_mapped = convertMonophyleticResults(monophyletic_output,tree,log)
