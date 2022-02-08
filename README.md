@@ -9,7 +9,11 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V1.0
+Current Version: V1.1 (released 8 Feb 2022, note this fixes a major bug in how nodes were labelled, which resulted in some SNPs being reported on the wrong node in the output table, relative to how nodes were labelled in the output tree)
+
+# Dedication
+
+This software was developed by David Edwards, who tragically passed away on October 1, 2020. He was a wonderful and generous colleague who will be sorely missed by the rest of the Holt lab, of which he was an integral part for 10 years. We, his colleagues, have done our best to continue David's work by resolving issues with the SNPPar code and finalising the SNPPar publication, and we will continue to respond to issues as much as possible. 
 
 # Home:
 
@@ -20,9 +24,7 @@ Please use the SNPPar 'Issues' page on GitHub if you have any problems or find a
 Also available: [SNPPar_test](https://github.com/d-j-e/SNPPar_test) - a git with all the data, code, instructions and outputs for testing SNPPar with simulated and empirical data as found in the citation below.
 
 # Citation 
-Edwards DJ, Duchêne S, Pope B, and Holt KE. "SNPPar: identifying convergent evolution and other homoplasies from microbial whole-genome alignments" _Biorxiv_ 2020 [doi:10.1101/2020.07.08.194480v1](https://www.biorxiv.org/content/10.1101/2020.07.08.194480v1)
-
-Submitted to _Microbial Genomics_
+Edwards DJ, Duchêne S, Pope B, and Holt KE. "SNPPar: identifying convergent evolution and other homoplasies from microbial whole-genome alignments" _Microbial Genomics_ 2021 [doi:10.1101/2020.07.08.194480v1](https://doi.org/10.1099/mgen.0.000694)
 
 # License:
 
