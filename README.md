@@ -36,7 +36,7 @@ Edwards DJ, Duchêne S, Pope B, and Holt KE. "SNPPar: identifying convergent evo
 # Requirements:
 * [BioPython](https://biopython.org/) (v1.66+)
 * [ETE3](http://etetoolkit.org/)
-* [TreeTime](https://github.com/neherlab/treetime) (v0.8.6)
+* [TreeTime](https://github.com/neherlab/treetime) (<v0.8.6, incompatible files introduced in later versions)
 
 ## Optional Requirement:
 [FastML](http://fastml.tau.ac.il/)
