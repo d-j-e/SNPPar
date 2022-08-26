@@ -24,6 +24,6 @@ setup(
     install_requires=[
         'biopython>=1.66,<=1.76',
         'ete3',
-        'phylo-treetime==v0.8.6'
+        'phylo-treetime>=0.6.3,<=v0.8.6'
     ],
 )
