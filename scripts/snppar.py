@@ -2664,6 +2664,20 @@ def main():
 		logPrint(log, message, 'INFO')
 		writeMFASTA(prefix+"node_sequences.fasta",node_snptable,tree_nodes)
 		mapped = getConsequences(mapped, snptable, strains, node_snptable, tree_nodes, sequence, snpPositionList,log)
+		
+	####### modified by Roger Vargas Jr #################################
+	#split mapped variants up into intragenic and intergenic
+	mapped_intragenic_variants = [mapped_variant for mapped_variant in mapped if mapped_variant[1]=='intragenic']
+	mapped_intergenic_variants = [mapped_variant for mapped_variant in mapped if mapped_variant[1]=='intergenic']
+
+    #keep only mapped variants if neither Ancestor Allele or Derived Allele is an 'N'
+	mapped_intragenic_variants_to_keep = [mapped_variant for mapped_variant in mapped_intragenic_variants if (mapped_variant[8] != 'N') and (mapped_variant[9] != 'N')]
+	mapped_intergenic_variants_to_keep = [mapped_variant for mapped_variant in mapped_intergenic_variants if (mapped_variant[10] != 'N') and (mapped_variant[11] != 'N')]
+
+	#merge intragenic and intergenic into same list
+	mapped = mapped_intragenic_variants_to_keep + mapped_intergenic_variants_to_keep
+	##################################################################
+	
 	findEvents(arguments.mutation_events,arguments.strict, arguments.no_all_calls, arguments.parallel, arguments.convergent, arguments.revertant, arguments.no_homoplasic, arguments.no_all_events, mapped, prefix, tree, tree_strains,log)
 	if not arguments.no_clean_up and not arguments.mutation_events:
 		cleanUp(directory,prefix,arguments.fastml,log)
