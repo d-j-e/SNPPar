@@ -74,6 +74,7 @@ def parseArguments():
 	parser.add_argument('-e', '--no_all_events', default=False, action="store_true", help='Flag to turn off reporting of all mutation events')
 	parser.add_argument('-u', '--no_clean_up', default=False, action="store_true", help='Flag to turn off deletion of intermediate files on completion of run')
 	parser.add_argument('-f', '--fastml', default=False, action="store_true", help='Flag to use fastML for ASR (default ASR: TreeTime)')
+	parser.add_argument('-i', '--include_missing', default=False, action="store_true", help='Turn on analysis of sites with missing calls (otherwise these are excluded, as can cause problems and extend runtime)')
 	# Further optional inputs
 	parser.add_argument('-x', '--fastml_execute', type=str, default="fastml", help='Command to execute fastML (default command: "fastml" i.e. on PATH)')
 	return parser.parse_args()
@@ -2665,18 +2666,20 @@ def main():
 		writeMFASTA(prefix+"node_sequences.fasta",node_snptable,tree_nodes)
 		mapped = getConsequences(mapped, snptable, strains, node_snptable, tree_nodes, sequence, snpPositionList,log)
 		
-	####### modified by Roger Vargas Jr #################################
-	#split mapped variants up into intragenic and intergenic
-	mapped_intragenic_variants = [mapped_variant for mapped_variant in mapped if mapped_variant[1]=='intragenic']
-	mapped_intergenic_variants = [mapped_variant for mapped_variant in mapped if mapped_variant[1]=='intergenic']
+	
+	if not arguments.include_missing:
+		####### modified by Roger Vargas Jr #################################
+		#split mapped variants up into intragenic and intergenic
+		mapped_intragenic_variants = [mapped_variant for mapped_variant in mapped if mapped_variant[1]=='intragenic']
+		mapped_intergenic_variants = [mapped_variant for mapped_variant in mapped if mapped_variant[1]=='intergenic']
 
-    #keep only mapped variants if neither Ancestor Allele or Derived Allele is an 'N'
-	mapped_intragenic_variants_to_keep = [mapped_variant for mapped_variant in mapped_intragenic_variants if (mapped_variant[8] != 'N') and (mapped_variant[9] != 'N')]
-	mapped_intergenic_variants_to_keep = [mapped_variant for mapped_variant in mapped_intergenic_variants if (mapped_variant[10] != 'N') and (mapped_variant[11] != 'N')]
+		#keep only mapped variants if neither Ancestor Allele or Derived Allele is an 'N'
+		mapped_intragenic_variants_to_keep = [mapped_variant for mapped_variant in mapped_intragenic_variants if (mapped_variant[8] != 'N') and (mapped_variant[9] != 'N')]
+		mapped_intergenic_variants_to_keep = [mapped_variant for mapped_variant in mapped_intergenic_variants if (mapped_variant[10] != 'N') and (mapped_variant[11] != 'N')]
 
-	#merge intragenic and intergenic into same list
-	mapped = mapped_intragenic_variants_to_keep + mapped_intergenic_variants_to_keep
-	##################################################################
+		#merge intragenic and intergenic into same list
+		mapped = mapped_intragenic_variants_to_keep + mapped_intergenic_variants_to_keep
+		##################################################################
 	
 	findEvents(arguments.mutation_events,arguments.strict, arguments.no_all_calls, arguments.parallel, arguments.convergent, arguments.revertant, arguments.no_homoplasic, arguments.no_all_events, mapped, prefix, tree, tree_strains,log)
 	if not arguments.no_clean_up and not arguments.mutation_events:
