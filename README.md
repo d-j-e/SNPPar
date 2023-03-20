@@ -9,7 +9,9 @@ SNPPar is designed to find homoplasic SNPs based on a user-defined phylogenetic 
 
 By default, SNPPar uses TreeTime for ancestral state reconstruction (ASR), but using FastML for ASR is also available if FastML is installed (though much, much slower)
 
-Current Version: V1.1 (released 8 Feb 2022, note this fixes a major bug in how nodes were labelled, which resulted in some SNPs being reported on the wrong node in the output table, relative to how nodes were labelled in the output tree)
+Current Version: V1.2 (released 20 March 2023). Includes:
+* March 2023 fix, contributed by Anna Green & Roger Vargas (many thanks!), which changes the default behaviour to skip analysis of sites with missing calls as this can slow things down and cause crashes if there is a lot of missing data (you can switch back to the old behaviour or analysing and reporting these sites, if needed, using the --include_missing flag)
+* Feb 2022 bug fix affecting how nodes were labelled (previously resulted in some SNPs being reported on the wrong node in the output table, relative to how nodes were labelled in the output tree)
 
 # Dedication
 
@@ -126,6 +128,7 @@ Note: If any gene is split in the reference (including across the origin of the 
     -u, --no_clean_up     Flag to turn off deletion of intermediate files on
                         completion of run
     -f, --fastml          Flag to use fastML for ASR (default ASR: TreeTime)
+    -i, --include_missing	Turn on analysis of sites with missing calls (otherwise these are excluded, as can cause problems and extend runtime)
     -x FASTML_EXECUTE, --fastml_execute FASTML_EXECUTE
                         Command to execute fastML (default command: "fastml"
                         i.e. on PATH)
