@@ -2628,7 +2628,8 @@ def main():
 	# read in tree
 	tree, tree_strains, tree_nodes = readTree(arguments.tree,log)
 	tree_file_with_nodes = prefix + "input_tree" + "_nodeNames.nwk" # KH fix - write out the input tree with our node names added
-	tree.write(format=7, outfile=tree_file_with_nodes) # KH fix
+	# Anna G. Green fix - need output format=1, output format=7 does not save internal branch lengths
+	tree.write(format=1, outfile=tree_file_with_nodes) # KH fix
 	if not arguments.mutation_events:
 		#check same isolates are found tree and alignment
 		if not sameStrains(strains,tree_strains):
