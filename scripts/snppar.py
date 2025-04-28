@@ -35,7 +35,7 @@ from argparse import ArgumentParser
 from Bio import SeqIO, AlignIO
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC, generic_dna
+#from Bio.Alphabet import IUPAC, generic_dna
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import _dna_complement_table as dna_complement_table
 from Bio.Data.CodonTable import TranslationError
@@ -1878,7 +1878,8 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 	elif genestrand == -1:
 		codonseq[positionInCodon-1] = ancestral.translate(dna_complement_table)
 		codonseq = getAncestralBasesReverse(codonseq,positionInCodon,codon,snp_list,node_snptable,ancestral_group)
-	ancestral_codon = Seq(''.join(codonseq),IUPAC.unambiguous_dna)
+	#ancestral_codon = Seq(''.join(codonseq),IUPAC.unambiguous_dna)
+	ancestral_codon = Seq(''.join(codonseq))
 	# mutate with current SNP
 	# again checking other bases in codon
 	if genestrand == 1:
@@ -1887,7 +1888,8 @@ def getCodons(positionInCodon,genestrand,snpPosition,derived,ancestral,derived_g
 	elif genestrand == -1:
 		codonseq[positionInCodon-1] = derived.translate(dna_complement_table)
 		codonseq = getDerivedBasesReverse(codonseq,positionInCodon,codon,snp_list,node_snptable,derived_group,strains,snptable)
-	derived_codon = Seq(''.join(codonseq),IUPAC.unambiguous_dna)
+	#derived_codon = Seq(''.join(codonseq),IUPAC.unambiguous_dna)
+	derived_codon = Seq(''.join(codonseq))
 
 	# Translate codons; codons containing ambigous bases cannot always be translated, 
 	# in these cases set amino acid (AA) to None
